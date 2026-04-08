@@ -587,3 +587,23 @@ alias espocrm-down="cd ~/espocrm-docker && docker compose down"
 alias espocrm-logs="cd ~/espocrm-docker && docker compose logs -f"
 alias espocrm-status="cd ~/espocrm-docker && docker compose ps"
 alias espocrm="~/.local/bin/espocrm.sh"
+
+alias github='cd ~/archbook && \
+  rsync -ah --progress ~/.bashrc . && \
+  rsync -ah --progress ~/.inputrc . && \
+  rsync -ah --progress ~/.config/hypr/ .config/hypr/ && \
+  rsync -ah --progress ~/.config/waybar/ .config/waybar/ && \
+  rsync -ah --progress ~/.config/dunst/ .config/dunst/ && \
+  rsync -ah --progress ~/.config/fuzzel/ .config/fuzzel/ && \
+  rsync -ah --progress ~/.config/foot/ .config/foot/ && \
+  rsync -ah --progress ~/.config/lf/ .config/lf/ && \
+  rsync -ah --progress ~/.config/wal/ .config/wal/ && \
+  rsync -ah --progress ~/.config/imv/ .config/imv/ && \
+  rsync -ah --progress ~/.config/mpv/ .config/mpv/ && \
+  rsync -ah --progress ~/.config/qutebrowser/ .config/qutebrowser/ && \
+  rsync -ah --progress ~/.local/bin/ .local/bin/ && \
+  rsync -ah --progress /usr/share/meus_wallpapers/ wallpapers/ && \
+  git add . && \
+  git commit -m "sync: $(date +%Y-%m-%d)" && \
+  git push && \
+  cd -'

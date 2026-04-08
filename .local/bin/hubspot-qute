@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if pgrep -f "qute-hubspot" >/dev/null; then
+    hyprctl dispatch focuswindow title:HubSpot
+else
+    qutebrowser \
+      --qt-arg name qute-hubspot \
+      --basedir ~/.local/share/qute-hubspot \
+      --config-py ~/.config/qute-hubspot/config.py \
+      --target window \
+      https://app.hubspot.com &
+fi

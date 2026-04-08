@@ -1,0 +1,148 @@
+{
+"layer": "top",
+"position": "top",
+"height": 30,
+"margin-top": 3,
+"margin-left": 6,
+"margin-right": 6,
+"spacing": 0,
+"modules-left": [
+"custom/apple",
+"hyprland/workspaces",
+"hyprland/window"
+],
+
+"modules-right": [
+"bluetooth",
+"battery",
+"network",
+"pulseaudio",
+"clock"
+],
+
+//"custom/apple": {
+//    "format": "  ",
+//    "tooltip": false
+//},
+
+"custom/apple": {
+    "format": "  ",  // ícone Arch (ou  se preferir Mac)
+    "tooltip": false
+},
+
+"hyprland/workspaces": {
+    "format": "{id} {windows}",
+    "format-window-separator": " ",
+    "window-rewrite-default": "",
+    "window-rewrite": {
+        "Anki": " ",
+        "blueman-manager-wrapped": " ",
+        "com.obsproject.Studio": "󰄄 ",
+        "com.usebottles.bottles": " ",
+        "discord": "󰊴 ",
+        "Element": " ",
+        "emacs": " ",
+        "code": "󰨞",
+        "Code": "󰨞",
+        "foot": " ",
+        "ghidra": " ",
+        "Gimp": " ",
+        "libreoffice-calc": " ",
+        "libreoffice-draw": "󰽉 ",
+        "libreoffice-impress": "󰈩 ",
+        "libreoffice-writer": "󰷈 ",
+        "mpv": " ",
+        "mullvad vpn": " ",
+        "imv": " ",
+        "org.getmonero.": " ",
+        "org.kde.kdenlive": " ",
+        "signal": "󰭹 ",
+        "Slack": "󰒱 ",
+        "spotify": " ",
+        "teams-for-linux": "󰊻 ",
+        "vm2": " ",
+        "vm": " ",
+        "vlc": "󱍼 ",
+        "zathura": " ",
+        "qutebrowser": "󰇧 ",
+        "zoom": " ",
+        "Yazi": "󰇥 ",
+        "NVIM": " ",
+        "btop": "󰻎 ",
+        "htop": "󰻎 ",
+        "Steam": " ",
+        "btop": "󰻎 ",
+        "top": "󰻎 ",
+        "virt-manager": " ",
+        "virt-viewer": " "
+    }
+},
+
+"hyprland/window": {
+"format": "{}",
+"max-length": 60,
+"separate-outputs": true
+},
+
+"network": {
+"format-wifi": "",
+"format-ethernet": "󰈀",
+"format-disconnected": "󰤮",
+"tooltip-format-wifi": "{essid} ({frequency} GHz)\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+},
+
+"bluetooth": {
+    "format": "",
+    "format-off": "󰂲",
+    "format-disabled": "󰂲",
+    "format-connected": "󰂱",
+    "format-no-controller": "",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "on-click": "sudo systemctl start bluetooth && blueman-manager"
+},
+
+"battery": {
+    "bat": "BAT0",
+    "interval": 60,
+    "states": {
+        "warning": 20,
+        "critical": 15
+    },
+    "format": "{capacity}% {icon}",
+    "format-charging": "{capacity}% 󰚥",
+    "format-plugged": "{capacity}% ",
+    "format-icons": ["","","","",""],
+    "tooltip-format": "{timeTo} restantes",
+    "events": {
+        "on-discharging-warning": "notify-send -u normal '  Bateria baixa' -i battery-low-symbolic -t 10000",
+        "on-discharging-critical": "notify-send -u critical '  Bateria CRÍTICA' -i battery-empty-symbolic -t 0"
+    }
+},
+
+"pulseaudio": {
+        "format": "{volume}% {icon}",
+        "format-bluetooth": "{volume}% {icon}",
+        "scroll-step": 5,
+        "format-muted": "0%  ",
+        "format-icons": {
+            "headphone": " ",
+            "hands-free": " ",
+            "headset": " ",
+            "default": ["", "", ""]
+        }
+},
+
+//"clock": {
+//"format": "{:L%A %H:%M}",
+//"format-alt": "{:L%d %B W%V %Y}",
+//"tooltip": false
+
+"clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%d %b %Y}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>"
+
+}
+}

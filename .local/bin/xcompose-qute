@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if pgrep -f "qute-xcompose" >/dev/null; then
+    hyprctl dispatch focuswindow title:"X Compose"
+else
+    qutebrowser \
+      --qt-arg name qute-xcompose \
+      --basedir ~/.local/share/qute-xcompose \
+      --config-py ~/.config/qute-xcompose/config.py \
+      --target window \
+      https://x.com/compose/post &
+fi

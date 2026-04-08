@@ -1,0 +1,36 @@
+[global]
+   monitor = 0
+   follow = mouse
+   width = (250, 500)
+   height = (0, 750)
+   offset = (17, 26)
+   padding = 8
+   horizontal_padding = 10
+   gap_size = 5
+   transparency = 20
+   frame_width = 1
+   font = JetBrains Mono 10
+   corner_radius = 10
+   min_icon_size = 32
+   max_icon_size = 64
+   format = "<b>%s</b>\n%b"
+   progress_bar = true
+   progress_bar_height = 8
+
+[urgency_low]
+   background = "#040915"
+   foreground = "#9dd1e8"
+   frame_color = "#5A5D9B"
+   timeout = 3
+
+[urgency_normal]
+   background = "#040915"
+   foreground = "#9dd1e8"
+   frame_color = "#936F88"
+   timeout = 5
+
+[urgency_critical]
+   background = "#040915"
+   foreground = "#2469AC"
+   frame_color = "#2469AC"
+   timeout = 0

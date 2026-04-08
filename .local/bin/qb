@@ -1,0 +1,5 @@
+#!/bin/bash
+# ~/bin/qb
+qutebrowser --qt-flag enable-features=UseOzonePlatform \
+            --qt-flag ozone-platform=wayland \
+            "$@"

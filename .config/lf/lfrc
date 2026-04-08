@@ -1,0 +1,232 @@
+# ==============================================================================
+# CONFIGURAÇÕES BÁSICAS
+# ==============================================================================
+set preview false      # Performance máxima no MacBook A1278
+set icons true         # Habilita o suporte a ícones
+set ignorecase true
+set sortby time        # Ordenar por tempo (modificação)
+set reverse true       # Mais recente primeiro
+set hidden false        # Mostrar arquivos ocultos por padrão
+set shellopts '-eu'
+set ifs "\n"
+set scrolloff 10
+set info "size"
+set period 1
+set autoquit true
+set cursorpreviewfmt "" # No cursor in the directory preview pane
+#set cursoractivefmt "\033[1m"
+set drawbox true
+
+# ==============================================================================
+# COMANDOS DE ABERTURA
+# ==============================================================================
+
+cmd open_terminal ${{ foot -e micro "$f" }}
+
+cmd open ${{
+    case "$f" in
+        # Documentos Writer
+        *.doc|*.docx|*.odt|*.rtf)
+            setsid -f libreoffice --writer "$f" > /dev/null 2>&1 ;;
+
+        # Planilhas Calc
+        *.xls|*.xlsx|*.ods|*.csv)
+            setsid -f libreoffice --calc "$f" > /dev/null 2>&1 ;;
+
+        # PDFs
+        *.pdf)
+            zathura "$f" & ;;
+
+        # Imagens
+        *.png|*.jpg|*.jpeg|*.gif|*.webp|*.bmp|*.tiff|*.svg)
+            imv "$f" & ;;
+
+        # Vídeos e áudio
+        *.mp4|*.mkv|*.avi|*.webm|*.mov|*.flv|*.wmv|*.m4v|*.mp3|*.flac|*.ogg|*.wav)
+            mpv "$f" & ;;
+
+        # Arquivos de texto/código
+        *.txt|*.md|*.sh|*.conf|*.json|*.yaml|*.yml|*.xml|*.html|*.css|*.js|*.py|*.rs|*.go|*.c|*.cpp|*.h|*.lua|*.toml|*.ini)
+            foot -e micro "$f" ;;
+
+        *)
+            xdg-open "$f" > /dev/null 2>&1 & ;;
+    esac
+}}
+
+# ==============================================================================
+# COMANDOS PERSONALIZADOS
+# ==============================================================================
+
+# Abrir no Qutebrowser
+cmd browser ${{ qutebrowser "$f" & }}
+
+# Abrir no Imv
+cmd imv ${{ imv "$f" > /dev/null 2>&1 & }}
+
+# Abrir URL do clipboard no qutebrowser
+cmd open_url ${{
+    url=$(wl-paste)
+    if [[ "$url" =~ ^https?:// ]]; then
+        qutebrowser "$url" &
+        notify-send "lf" "Abrindo URL no qutebrowser"
+    else
+        notify-send "lf" "Clipboard não contém URL válida"
+    fi
+}}
+
+# Enviar arquivo via LocalSend
+cmd localsend ${{
+    # Roda o localsend em background, silencia logs e desvincula do terminal
+    nohup localsend "$fx" >/dev/null 2>&1 &
+    notify-send "lf" "Enviando $(echo "$fx" | wc -w) arquivo(s) via LocalSend"
+}}
+
+# Abrir Timeshift
+cmd timeshift ${{
+    foot -e sudo timeshift-gtk &
+}}
+
+# Abrir Boxes
+cmd boxes ${{
+    gnome-boxes &
+}}
+
+# ==============================================================================
+# MANIPULAÇÃO DE ARQUIVOS
+# ==============================================================================
+
+# Extração
+cmd extract ${{
+    set -f
+    case "$f" in
+        *.tar.bz2|*.tbz2) tar xjf "$f" ;;
+        *.tar.gz|*.tgz) tar xzf "$f" ;;
+        *.tar.xz|*.txz) tar xJf "$f" ;;
+        *.zip) unzip "$f" ;;
+        *.rar) unrar x "$f" ;;
+        *.7z) 7z x "$f" ;;
+        *) notify-send "lf" "Formato não suportado: $f" ;;
+    esac
+}}
+
+# Renomear em massa
+cmd bulkrename ${{
+    tmpfile_old="$(mktemp)"
+    tmpfile_new="$(mktemp)"
+    [ -n "$fs" ] && fs=$(basename -a $fs) || fs=$(ls)
+    echo "$fs" > "$tmpfile_old"
+    echo "$fs" > "$tmpfile_new"
+    foot -e micro "$tmpfile_new"
+    [ "$(wc -l < "$tmpfile_old")" -eq "$(wc -l < "$tmpfile_new")" ] || exit 1
+    paste "$tmpfile_old" "$tmpfile_new" | while IFS="$(printf '\t')" read -r src dst
+    do
+        [ "$src" = "$dst" ] || [ -e "$dst" ] || mv -- "$src" "$dst"
+    done
+    rm -f "$tmpfile_old" "$tmpfile_new"
+    lf -remote "send $id unselect"
+}}
+
+# Copiar caminho
+cmd copy_path ${{
+    printf "%s" "$fx" | wl-copy
+    notify-send "lf" "Caminho copiado"
+}}
+
+# Deletar com confirmação
+cmd delete ${{
+    printf "Deletar selecionados? [y/N] "
+    read ans
+    [ "$ans" = "y" ] && rm -rf -- $fx
+}}
+
+# Criar diretorio no lfrc
+cmd mkdir-gui ${{
+    printf "Nome do diretório: "
+    read res
+    mkdir -p "$res"
+}}
+
+# Atualizar Wallpapers
+cmd set_wallpaper ${{
+    wal -i "$f"
+    # Se usar Sway/Wayland:
+    # swww img "$f"
+    # Se usar X11:
+    # feh --bg-fill "$f"
+    notify-send "lf" "Tema e Wallpaper atualizados!"
+}}
+
+# ==============================================================================
+# INTEGRAÇÃO FZF E RIPGREP
+# ==============================================================================
+
+cmd find_files ${{
+    foot -e bash -c '
+        selected=$(fd --type f --hidden --exclude .git --exclude .cache | fzf --exit-0 --no-sort);
+        if [[ -n "$selected" ]]; then
+            lf -remote "send $id cd $(dirname \"$selected\") && select $(basename \"$selected\")";
+        fi
+    '
+}}
+
+cmd grep_content ${{
+    foot -e bash -c '
+        echo "Busca Ripgrep:" && read -r query;
+        if [[ -n "$query" ]]; then
+            rg --color=always --line-number "$query" | fzf --ansi --phony --no-sort --reverse --bind "enter:execute(foot -e micro {1} +{2})";
+        fi
+    '
+}}
+
+# ==============================================================================
+# MAPEAMENTOS
+# ==============================================================================
+
+# Navegação e abertura básica
+map <enter> open
+map l open
+map o open
+map g top
+
+# Abrir com programas específicos
+#map e open_terminal     # Micro no terminal
+map Q browser           # Qutebrowser
+#map I imv               # Imv (imagens)
+#map V :!mpv "$f" &      # MPV (vídeo/áudio)
+#map Z :!zathura "$f" &  # Zathura (PDF)
+
+# Manipulação de arquivos
+map E extract           # Extrair arquivo
+map B bulkrename        # Renomear em massa
+map U copy_path         # Copiar caminho
+map D delete            # Deletar
+map A :rename; cmd-end  # at the very end
+map a :rename; cmd-right # after extension
+map n push :mkdir-gui<enter>
+
+# Copiar e Colar (Nativo)
+map y copy    # 'y' de yank (copia os arquivos selecionados para o buffer)
+map p paste   # 'p' de paste (cola os arquivos no diretório atual)
+
+
+# Busca
+map F find_files        # Buscar arquivos (fzf)
+map G grep_content      # Buscar conteúdo (ripgrep)
+
+# Utilitários
+map L localsend         # Enviar via LocalSend
+map T timeshift         # Abrir Timeshift
+map <c-b> boxes         # Abrir Boxes (VMs)
+map <c-u> open_url      # Abrir URL do clipboard
+
+# Reload (atualizar diretório)
+map r reload            # Tecla 'r'
+map <c-r> reload        # Ctrl+R
+map <f-5> reload        # F5
+
+# Mapeie para uma tecla (ex: 'W' de Wallpaper)
+map W set_wallpaper
+
+# CARREGAMENTO DE ÍCONES
+source ~/.config/lf/icons

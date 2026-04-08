@@ -1,0 +1,121 @@
+/* ==============================================
+   Waybar Style - Tema dinâmico com Pywal
+   ============================================== */
+
+/* Importa as cores geradas pelo pywal */
+@import "../../.cache/wal/colors-waybar.css";
+
+/* Reset básico */
+* {
+    border: none;
+    min-height: 0;
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 13px;
+    padding: 0;
+    margin: 0;
+}
+
+/* Janela principal da Waybar */
+window#waybar {
+    background-color: alpha(@background, 0.85);     /* transparência suave */
+    border-radius: 8px;
+    border: 1px solid alpha(@color8, 0.35);         /* borda cinza sutil */
+    border-bottom: 2px solid @color1;               /* linha de destaque */
+    margin: 8px 12px 0 12px;
+    color: @foreground;
+    transition: all 0.18s ease;                     /* ok em background/color */
+}
+
+/* Módulos gerais */
+#custom-apple,
+#workspaces button,
+#window,
+#network,
+#pulseaudio,
+#bluetooth,
+#battery,
+#clock {
+    color: @foreground;
+}
+
+/* Logo Apple/Arch */
+#custom-apple {
+    padding: 0 14px 0 10px;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+/* Workspaces - pílula arredondada (sem transform) */
+#workspaces {
+    margin-left: 2px;
+}
+
+#workspaces button {
+    padding: 0 10px;
+    margin: 0 3px;
+    min-width: 28px;
+    border-radius: 14px;      /* arredondado suave - ajuste se quiser mais/menos */
+    background: transparent;
+    color: alpha(@foreground, 0.75);
+    transition: all 0.2s ease;
+}
+
+#workspaces button:hover {
+    background: alpha(@color5, 0.20);
+    /* Removido transform: scale(1.05); - não suportado */
+}
+
+#workspaces button.active {
+    background: alpha(@color4, 0.40);   /* destaque principal */
+    color: @foreground;
+    font-weight: 600;
+    border-radius: 14px;
+}
+
+#workspaces button.active:hover {
+    background: alpha(@color4, 0.55);
+}
+
+/* Módulos da direita */
+#network,
+#pulseaudio,
+#bluetooth,
+#battery,
+#clock {
+    padding: 0 10px;
+    margin: 0 3px;
+}
+
+/* Bluetooth conectado */
+#bluetooth.connected {
+    color: @color6;
+}
+
+/* Pulseaudio muted */
+#pulseaudio.muted {
+    color: @color1;
+}
+
+/* Battery */
+#battery.warning:not(.charging) {
+    color: @color3;
+    animation: blink 1.8s infinite alternate;
+}
+
+#battery.critical:not(.charging) {
+    color: @color1;
+    font-weight: bold;
+}
+
+/* Window title */
+#window {
+    padding-left: 12px;
+    padding-right: 16px;
+    font-weight: 600;
+}
+
+/* Animações */
+@keyframes blink {
+    from { opacity: 1.0; }
+    to   { opacity: 0.55; }
+}

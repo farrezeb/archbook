@@ -1,0 +1,12 @@
+#!/bin/bash
+PREFIX="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+
+selected=$(find "$PREFIX" -name "*.gpg" \
+  | sed "s|$PREFIX/||;s|\.gpg$||" \
+  | sort \
+  | fuzzel --dmenu --prompt=" Senha: " --lines=15)
+
+[[ -z "$selected" ]] && exit 0
+
+pass show -c "$selected"
+notify-send "󰌆 Pass" "\"$selected\" copiado (45s)"

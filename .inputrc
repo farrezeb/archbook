@@ -1,0 +1,52 @@
+# Completion settings
+set meta-flag on
+set input-meta on
+set output-meta on
+set convert-meta off
+set completion-ignore-case on
+set completion-prefix-display-length 2
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set completion-display-width 0
+
+# Faz as setas para cima/baixo buscarem no histórico apenas comandos
+# que começam com o texto que você já digitou
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\e[C": forward-char
+"\e[D": backward-char
+
+# Adiciona automaticamente uma barra (/) ao completar nomes de
+# links simbólicos que apontam para pastas (como o seu ~/USB)
+set mark-symlinked-directories on
+
+# Não mostra arquivos ocultos (que começam com ponto) no Tab, a menos
+# que você digite o ponto explicitamente
+set match-hidden-files off
+
+# Mostra todos os resultados do preenchimento automático de uma vez,
+# sem pausar a tela por páginas
+set page-completions off
+
+# Se houver mais de 200 sugestões ao apertar Tab, o terminal pergunta
+# se você realmente quer ver todas (evita poluir a tela)
+set completion-query-items 200
+
+# Mostra informações extras ao completar (como / para pastas e * para executáveis),
+# igual ao comando `ls -F`
+set visible-stats on
+
+# Torna o preenchimento (Tab) mais inteligente ao analisar o texto
+# que já existe após o cursor, evitando repetições de letras
+set skip-completed-text on
+
+# Ativa cores nas sugestões de preenchimento do Tab (igual às cores do comando ls)
+set colored-stats on
+set colored-completion-prefix on
+
+# Melhorar visual SF PRO
+set menu-complete-display-prefix on
+
+# Desativa o alerta (beep ou flash) do terminal
+set bell-style none
+

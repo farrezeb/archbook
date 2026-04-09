@@ -548,6 +548,7 @@ alias gp='git push'
 alias gl='git log --oneline --graph --all'
 
 alias github='cd ~/archbook && \
+  rm ~/archbook/packages/packages_list
   yay -Qq > ~/archbook/packages/packages_list
   rsync -ah --progress ~/.bashrc . && \
   rsync -ah --progress ~/.inputrc . && \

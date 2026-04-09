@@ -16,7 +16,6 @@
 - File Manager: lf
 - Notificações: Dunst
 - Cores: Pywal
-- Senhas: pass + GPG
 
 ## Restaurar em uma nova instalação
 
@@ -51,10 +50,4 @@ cp -r .local/bin/* ~/.local/bin/
 sudo cp -r wallpapers/* /usr/share/meus_wallpapers/
 chmod +x ~/.local/bin/*
 source ~/.bashrc
-```
-
-### 4. Restaurar chave GPG e senhas
-```bash
-gpg --import chave-gpg-backup.asc
-git clone git@github.com:farrezeb/password-store.git ~/.password-store
 ```

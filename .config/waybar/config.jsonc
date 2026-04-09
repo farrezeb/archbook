@@ -20,11 +20,6 @@
 "clock"
 ],
 
-//"custom/apple": {
-//    "format": "  ",
-//    "tooltip": false
-//},
-
 "custom/apple": {
     "format": "  ",  // ícone Arch (ou  se preferir Mac)
     "tooltip": false
@@ -133,11 +128,6 @@
             "default": ["", "", ""]
         }
 },
-
-//"clock": {
-//"format": "{:L%A %H:%M}",
-//"format-alt": "{:L%d %B W%V %Y}",
-//"tooltip": false
 
 "clock": {
         "format": "{:%H:%M}",

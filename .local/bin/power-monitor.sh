@@ -12,7 +12,7 @@ LOG_ENABLED=true
 HYPR_USER="farrezeb"
 HYPR_UID=1000
 
-# CORREÇÃO: Inicializar com estado atual para evitar ação na startup
+# Inicializar com estado atual para evitar ação na startup
 LAST_LID=""
 
 log() {
@@ -75,10 +75,11 @@ create_configs() {
     # BATERIA: dim → suspend (sem lock)
     cat > /run/swayidle_bat.conf << 'EOF'
 timeout 90  '/usr/bin/brightnessctl -s set 10%' resume '/usr/bin/brightnessctl -r'
+timeout 110 '/usr/local/bin/lockscreen'
 timeout 150 '/usr/bin/systemctl suspend'
 EOF
 
-    # CORREÇÃO: AC / SERVIDOR - caminho absoluto para hyprctl
+    # AC / SERVIDOR - caminho absoluto para hyprctl
     cat > /run/swayidle_ac.conf << 'EOF'
 timeout 600 '/usr/bin/hyprctl dispatch dpms off' resume '/usr/bin/hyprctl dispatch dpms on'
 EOF
@@ -117,7 +118,7 @@ check_lid() {
     local current
     is_lid_closed && current="closed" || current="open"
 
-    # CORREÇÃO: Na primeira execução, apenas registra sem executar ação
+    # Na primeira execução, apenas registra sem executar ação
     if [ -z "$LAST_LID" ]; then
         LAST_LID="$current"
         log "Estado inicial da tampa: $current (sem ação)"
@@ -148,7 +149,7 @@ wait_hyprland() {
     return 1
 }
 
-# CORREÇÃO: Função separada para monitorar apenas o lid
+# Função separada para monitorar apenas o lid
 monitor_lid() {
     while true; do
         sleep 2
@@ -162,11 +163,11 @@ wait_hyprland
 create_configs
 switch_profile
 
-# CORREÇÃO: Inicializa LAST_LID antes de começar monitoramento
+# Inicializa LAST_LID antes de começar monitoramento
 is_lid_closed && LAST_LID="closed" || LAST_LID="open"
 log "Estado inicial definido: $LAST_LID"
 
-# CORREÇÃO: Separar os loops de monitoramento (evita concorrência no pipe)
+# Separar os loops de monitoramento (evita concorrência no pipe)
 monitor_lid &
 
 log "Monitorando eventos de energia..."

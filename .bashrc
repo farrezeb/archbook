@@ -552,6 +552,7 @@ alias github='cd ~/archbook && \
   yay -Qq > ~/archbook/packages/packages_list && \
   rsync -ah --progress ~/.bashrc . && \
   rsync -ah --progress ~/.inputrc . && \
+  rsync -ah --progress ~/.bash_history . && \
   rsync -ah --progress ~/.config/hypr/ .config/hypr/ && \
   rsync -ah --progress ~/.config/waybar/ .config/waybar/ && \
   rsync -ah --progress ~/.config/dunst/ .config/dunst/ && \
@@ -609,4 +610,4 @@ alias espocrm-down="cd ~/espocrm-docker && docker compose down"
 alias espocrm-logs="cd ~/espocrm-docker && docker compose logs -f"
 alias espocrm-status="cd ~/espocrm-docker && docker compose ps"
 alias espocrm="~/.local/bin/espocrm.sh"
-
+alias espocrm-db='sudo docker exec espocrm-app env | grep -i -E "(db|mysql|password|user)"'

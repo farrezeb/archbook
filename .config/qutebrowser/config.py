@@ -156,7 +156,7 @@ c.tabs.title.format = "{audio}{current_title}"
 # ============================================================================
 
 c.scrolling.bar = 'never'
-c.scrolling.smooth = False
+#c.scrolling.smooth = False
 
 c.input.insert_mode.auto_load = True
 c.input.insert_mode.auto_leave = True
@@ -216,8 +216,8 @@ config.bind('j', 'scroll down')
 config.bind('k', 'scroll up')
 config.bind('gg', 'scroll-to-perc 0')
 config.bind('G', 'scroll-to-perc 100')
-config.bind('Ctrl+D', 'scroll-page 0.5')
-config.bind('Ctrl+U', 'scroll-page -0.5')
+config.bind('Ctrl+d', 'scroll-page 0.5')
+config.bind('Ctrl+u', 'scroll-page -0.5')
 
 # Interface
 config.bind('xb', 'config-cycle statusbar.show always never')

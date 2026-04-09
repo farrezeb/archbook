@@ -26,7 +26,9 @@ git clone git@github.com:farrezeb/archbook.git ~/archbook
 ```
 
 ### 1.1 Para salvar uma cópia da sua lista de pacotes atualmente instalada:
-- yay -Qq > packages_list
+```bash
+yay -Qq > packages_list
+```
 - Reinstalar (re-pacstrap, etc.) a partir do
 
 ### 2. Instalar pacotes essenciais

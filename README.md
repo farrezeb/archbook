@@ -25,11 +25,17 @@
 git clone git@github.com:farrezeb/archbook.git ~/archbook
 ```
 
+### 1.1 Para salvar uma cópia da sua lista de pacotes atualmente instalada:
+- yay -Qq > packages_list
+- Reinstalar (re-pacstrap, etc.) a partir do
+
 ### 2. Instalar pacotes essenciais
 ```bash
 sudo pacman -S hyprland waybar foot fuzzel dunst micro lf imv mpv \
   pass pass-otp wl-clipboard python-pywal qutebrowser
 ```
+### 2.2 Reinstall yay
+- yay -S $(cat packages_list)
 
 ### 3. Aplicar dotfiles
 ```bash

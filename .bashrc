@@ -548,8 +548,8 @@ alias gp='git push'
 alias gl='git log --oneline --graph --all'
 
 alias github='cd ~/archbook && \
-  rm ~/archbook/packages/packages_list
-  yay -Qq > ~/archbook/packages/packages_list
+  rm -f ~/archbook/packages/packages_list && \
+  yay -Qq > ~/archbook/packages/packages_list && \
   rsync -ah --progress ~/.bashrc . && \
   rsync -ah --progress ~/.inputrc . && \
   rsync -ah --progress ~/.config/hypr/ .config/hypr/ && \
@@ -563,9 +563,9 @@ alias github='cd ~/archbook && \
   rsync -ah --progress ~/.config/mpv/ .config/mpv/ && \
   rsync -ah --progress ~/.config/qutebrowser/ .config/qutebrowser/ && \
   rsync -ah --progress ~/.local/bin/ .local/bin/ && \
-#  rsync -ah --progress /usr/share/meus_wallpapers/ wallpapers/ && \
   git add . && \
   git commit -m "sync: $(date +%Y-%m-%d)" && \
+  git pull --rebase origin main && \
   git push && \
   cd -'
 

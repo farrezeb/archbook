@@ -1,9 +1,20 @@
-# Archbook — Dotfiles do MacBook A1278
+# Archbook — (Fernando Bezerra <https://fernandobezerra.xyz>'s dotfiles)
 
 ## Hardware
 - MacBook A1278 (2012)
 - Arch Linux + Hyprland (Wayland)
 - Intel HD 4000 + NVIDIA GeForce 320M
+
+ PC: MacBook A1278
+󰣇 OS: Arch Linux x86_64
+ Kernel: Linux 6.18.21-1-lts
+󰃭 Installed: 01/12/2025
+ WM: Hyprland 0.54.3 (Wayla)
+ Term: foot 1.26.1
+ Shell: bash 5.3.9
+ CPU: Intel(R) Core(TM) i5-z
+ RAM: 16 GiB
+󰋊 Disk: 62.78 GiB / 930.51 Gs
 
 ## Stack
 - WM: Hyprland
@@ -16,6 +27,8 @@
 - File Manager: lf
 - Notificações: Dunst
 - Cores: Pywal
+- Video: Mpv
+- Imagens: Imv
 
 ## Restaurar em uma nova instalação
 

@@ -1,0 +1,59 @@
+#!/bin/bash
+# my-pass - versão com JavaScript minificado em uma linha
+
+export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/.local/bin:$PATH"
+
+echo "message-info '🔍 Script iniciado'" >> "$QUTE_FIFO"
+
+if [ -z "$QUTE_FIFO" ] || [ -z "$QUTE_URL" ]; then
+    echo "message-error '❌ Variáveis não definidas'" >> "$QUTE_FIFO"
+    exit 1
+fi
+
+domain=$(echo "$QUTE_URL" | awk -F/ '{print $3}' | sed 's/www\.//;s/login\.//;s/signin\.//')
+store_path="$HOME/.password-store"
+entries=$(find "$store_path" -name "*.gpg" -type f 2>/dev/null | sed "s|$store_path/||g; s|\.gpg$||g" | sort)
+
+match=$(echo "$entries" | grep -i "$domain" | head -1)
+
+if [ -n "$match" ]; then
+    selected="$match"
+    echo "message-info '✅ Auto-match: $selected'" >> "$QUTE_FIFO"
+else
+    selected=$(echo "$entries" | fuzzel --dmenu --prompt="Senha: " --lines=15)
+fi
+
+if [ -z "$selected" ]; then
+    echo "message-info '❌ Cancelado'" >> "$QUTE_FIFO"
+    exit 0
+fi
+
+full_entry=$(pass show "$selected" 2>/dev/null)
+
+if [ -z "$full_entry" ]; then
+    echo "message-error '❌ Erro ao ler pass'" >> "$QUTE_FIFO"
+    exit 1
+fi
+
+password=$(echo "$full_entry" | head -n 1)
+username=$(echo "$full_entry" | grep "^login:" | head -n 1 | sed 's/^login: //')
+
+echo "message-info '🔑 Senha carregada'" >> "$QUTE_FIFO"
+echo "message-info '👤 Usuário: $username'" >> "$QUTE_FIFO"
+
+if [ -n "$password" ]; then
+    # Minifica o JavaScript em uma linha só - VERSÃO SIMPLIFICADA SEM LOOP
+    if [ -n "$username" ]; then
+        # Usa múltiplos querySelector em sequência (mais simples, sem loop)
+        js_code="(function(){var u=document.querySelector('input[type=email]')||document.querySelector('input[name=email]')||document.querySelector('input[id=email]')||document.querySelector('input[name=username]')||document.querySelector('input[id=username]')||document.querySelector('input[name=login]')||document.querySelector('input[id=login]')||document.querySelector('input[name=account]')||document.querySelector('input[id=account]');var p=document.querySelector('input[type=password]');if(u){u.value='$username';u.dispatchEvent(new Event('input',{bubbles:true}));u.dispatchEvent(new Event('change',{bubbles:true}));}if(p){p.value='$password';p.dispatchEvent(new Event('input',{bubbles:true}));p.dispatchEvent(new Event('change',{bubbles:true}));}return'u:'+(u?'OK':'NA')+',p:'+(p?'OK':'NA');})();"
+
+        echo "jseval $js_code" >> "$QUTE_FIFO"
+        echo "message-info '✅ Preenchendo'" >> "$QUTE_FIFO"
+    else
+        js_code="(function(){var p=document.querySelector('input[type=password]');if(p){p.value='$password';p.dispatchEvent(new Event('input',{bubbles:true}));return'ok';}return'no-pass';})();"
+        echo "jseval $js_code" >> "$QUTE_FIFO"
+        echo "message-info '✅ Senha apenas'" >> "$QUTE_FIFO"
+    fi
+else
+    echo "message-error '❌ Senha vazia'" >> "$QUTE_FIFO"
+fi

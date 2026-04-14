@@ -1,0 +1,98 @@
+#!/bin/bash
+# my-pass - versão com debug de seletores
+
+export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/.local/bin:$PATH"
+
+echo "message-info '🔍 Script iniciado'" >> "$QUTE_FIFO"
+
+if [ -z "$QUTE_FIFO" ] || [ -z "$QUTE_URL" ]; then
+    echo "message-error '❌ Variáveis não definidas'" >> "$QUTE_FIFO"
+    exit 1
+fi
+
+domain=$(echo "$QUTE_URL" | awk -F/ '{print $3}' | sed 's/www\.//;s/login\.//;s/signin\.//')
+store_path="$HOME/.password-store"
+entries=$(find "$store_path" -name "*.gpg" -type f 2>/dev/null | sed "s|$store_path/||g; s|\.gpg$||g" | sort)
+
+match=$(echo "$entries" | grep -i "$domain" | head -1)
+
+if [ -n "$match" ]; then
+    selected="$match"
+    echo "message-info '✅ Auto-match: $selected'" >> "$QUTE_FIFO"
+else
+    selected=$(echo "$entries" | fuzzel --dmenu --prompt="Senha: " --lines=15)
+fi
+
+if [ -z "$selected" ]; then
+    echo "message-info '❌ Cancelado'" >> "$QUTE_FIFO"
+    exit 0
+fi
+
+full_entry=$(pass show "$selected" 2>/dev/null)
+
+if [ -z "$full_entry" ]; then
+    echo "message-error '❌ Erro ao ler pass'" >> "$QUTE_FIFO"
+    exit 1
+fi
+
+password=$(echo "$full_entry" | head -n 1)
+username=$(echo "$full_entry" | grep "^login:" | head -n 1 | sed 's/^login: //')
+
+echo "message-info '🔑 OK'" >> "$QUTE_FIFO"
+echo "message-info '👤 User: ${username:0:15}...'" >> "$QUTE_FIFO"
+
+if [ -n "$password" ]; then
+    jsfile="/tmp/qute_pass_$$.js"
+
+    if [ -n "$username" ]; then
+        # JavaScript com tentativa de múltiplos seletores e debug
+        cat > "$jsfile" << 'EOF'
+(function(){
+    var selectors=[
+        'input[type=email]','input[name=email]','input[id=email]',
+        'input[name=username]','input[id=username]',
+        'input[name=login]','input[id=login]',
+        'input[name=user]','input[id=user]',
+        'input[name=usuario]','input[id=usuario]',
+        'input[name=identificador]','input[id=identificador]',
+        'input[name=cpf]','input[id=cpf]',
+        'input[name=cnpj]','input[id=cnpj]',
+        'input[type=text]','input:not([type])'
+    ];
+    var u=null;
+    for(var i=0;i<selectors.length;i++){
+        u=document.querySelector(selectors[i]);
+        if(u)break;
+    }
+    var p=document.querySelector('input[type=password]');
+    if(u){u.value='USERNAME';u.dispatchEvent(new Event('input',{bubbles:true}));}
+    if(p){p.value='PASSWORD';p.dispatchEvent(new Event('input',{bubbles:true}));}
+    return'u:'+(u?u.name||u.id||'found':'NA')+',p:'+(p?'OK':'NA');
+})();
+EOF
+
+        # Substitui placeholders
+        sed -i "s/USERNAME/$(echo "$username" | sed 's/[&/\]/\\&/g')/g" "$jsfile"
+        sed -i "s/PASSWORD/$(echo "$password" | sed 's/[&/\]/\\&/g')/g" "$jsfile"
+
+        # Converte para uma linha só
+        jscode=$(tr -d '\n' < "$jsfile")
+        rm -f "$jsfile"
+
+        echo "jseval $jscode" >> "$QUTE_FIFO"
+        echo "message-info '✅ Enviado'" >> "$QUTE_FIFO"
+    else
+        # Só senha
+        echo -n "(function(){var p=document.querySelector('input[type=password]');if(p){p.value='" > "$jsfile"
+        echo -n "$password" | sed "s/'/\\'/g" >> "$jsfile"
+        echo -n "';p.dispatchEvent(new Event('input',{bubbles:true}));return'ok';}return'no-pass';})();" >> "$jsfile"
+
+        jscode=$(cat "$jsfile")
+        rm -f "$jsfile"
+
+        echo "jseval $jscode" >> "$QUTE_FIFO"
+        echo "message-info '✅ Senha apenas'" >> "$QUTE_FIFO"
+    fi
+else
+    echo "message-error '❌ Sem senha'" >> "$QUTE_FIFO"
+fi

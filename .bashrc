@@ -101,6 +101,7 @@ export SAL_USE_VCLPLUGIN=gtk3
 export MICRO_TRUECOLOR=1
 export EDITOR='micro'
 export VISUAL='micro'
+export GIT_EDITOR="micro"
 
 # --- VARIÁVEIS DE USUÁRIO (Para usar com: la $documentos, cp $downloads) ---
 export dl="$(xdg-user-dir DOWNLOAD)"      # Atalho curto $dl
@@ -544,7 +545,7 @@ fi
 alias gs='git status'
 alias ga='git add'
 alias gc='git commit'
-alias gp='git push'
+alias gp='pass git pull && pass git push'
 alias gl='git log --oneline --graph --all'
 
 alias github='cd ~/archbook && \
@@ -552,7 +553,7 @@ alias github='cd ~/archbook && \
   yay -Qq > ~/archbook/packages/packages_list && \
   rsync -ah --progress ~/.bashrc . && \
   rsync -ah --progress ~/.inputrc . && \
-  rsync -ah --progress ~/.bash_history . && \
+#  rsync -ah --progress ~/.bash_history . && \
   rsync -ah --progress ~/.config/hypr/ .config/hypr/ && \
   rsync -ah --progress ~/.config/waybar/ .config/waybar/ && \
   rsync -ah --progress ~/.config/dunst/ .config/dunst/ && \
@@ -564,6 +565,7 @@ alias github='cd ~/archbook && \
   rsync -ah --progress ~/.config/mpv/ .config/mpv/ && \
   rsync -ah --progress ~/.config/qutebrowser/ .config/qutebrowser/ && \
   rsync -ah --progress ~/.local/bin/ .local/bin/ && \
+  cd ~/archbook && \
   git add . && \
   git commit -m "sync: $(date +%Y-%m-%d)" && \
   git pull --rebase origin main && \
@@ -611,3 +613,75 @@ alias espocrm-logs="cd ~/espocrm-docker && docker compose logs -f"
 alias espocrm-status="cd ~/espocrm-docker && docker compose ps"
 alias espocrm="~/.local/bin/espocrm.sh"
 alias espocrm-db='sudo docker exec espocrm-app env | grep -i -E "(db|mysql|password|user)"'
+
+# Controle de Senhas GPG
+# Alias para inserir senha no formato padrão (senha + login + url)
+pass-insert() {
+    if [ $# -lt 2 ]; then
+        echo "Uso: pass-insert <caminho> <email/usuario> [url]"
+        echo "Exemplo: pass-insert facebook/farrezeb f.arrezeb@gmail.com facebook.com"
+        return 1
+    fi
+
+    local path="$1"
+    local login="$2"
+    local url="${3:-$path}"  # Se não informar URL, usa o path (ex: facebook.com)
+
+    # Extrai domínio do path se URL não fornecida
+    if [ -z "$3" ]; then
+        url=$(echo "$path" | cut -d'/' -f1)
+    fi
+
+    echo "Inserindo: $path"
+    echo "Login: $login"
+    echo "URL: $url"
+    echo "Digite a senha (será oculta) e pressione Enter, depois Ctrl+D:"
+
+    # Cria entrada com formato padrão
+    printf "%s\nlogin: %s\nurl: %s\n" "$(read -s password; echo "$password")" "$login" "$url" | pass insert -m "$path"
+
+    echo "✅ Entrada $path criada com sucesso!"
+}
+
+pass-new() {
+    echo "📁 Caminho (ex: facebook/farrezeb):"
+    read path
+
+    # Verifica se já existe
+    if pass show "$path" &>/dev/null; then
+        echo "⚠️  Atenção: $path já existe!"
+        read -p "Sobrescrever? [y/N] " confirm
+        [[ "$confirm" =~ ^[Yy]$ ]] || { echo "❌ Cancelado"; return 1; }
+    fi
+
+    echo "👤 Login/Email:"
+    read login
+
+    echo "🌐 URL (deixe em branco para usar: ${path%%/*}):"
+    read url
+    url=${url:-${path%%/*}}
+
+    echo "🔑 Digite a senha (oculta):"
+    read -s password
+    echo ""
+
+    # Validação básica
+    if [ -z "$password" ]; then
+        echo "❌ Erro: senha não pode ser vazia"
+        return 1
+    fi
+
+    # Insere no pass
+    printf "%s\nlogin: %s\nurl: %s\n" "$password" "$login" "$url" | pass insert -m "$path"
+
+    if [ $? -eq 0 ]; then
+        echo "✅ Criado: $path"
+        echo ""
+        pass show "$path"
+    else
+        echo "❌ Erro ao criar entrada"
+        return 1
+    fi
+}
+
+alias pn='pass-new'

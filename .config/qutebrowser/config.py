@@ -110,7 +110,9 @@ config.set('content.blocking.enabled', False, '*://*.youtu.be/*')
 # ============ PASS (Password Store) ============
 
 config.bind('<Alt-Shift-u>', 'spawn --userscript qute-pass-menu', mode='insert')
-config.bind('pw', 'spawn --userscript qute-pass-menu', mode='normal')
+#config.bind('pw', 'spawn --userscript qute-pass-menu', mode='normal')
+#config.bind('pw', 'spawn --userscript qute-pass')
+config.bind('pw', 'spawn --userscript my-pass')
 config.bind('<Ctrl-Shift-p>', 'spawn --userscript qute-pass-menu', mode='normal')
 
 # ============================================================================
@@ -120,6 +122,7 @@ config.bind('<Ctrl-Shift-p>', 'spawn --userscript qute-pass-menu', mode='normal'
 c.downloads.location.directory = '~/dl'
 c.downloads.position = 'bottom'
 c.downloads.remove_finished = 5000
+c.downloads.open_dispatcher = 'zathura {}'
 
 # ============================================================================
 # EDITOR / FILE PICKER

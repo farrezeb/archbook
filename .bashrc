@@ -549,28 +549,29 @@ alias gp='pass git pull && pass git push'
 alias gl='git log --oneline --graph --all'
 
 alias github='cd ~/archbook && \
-  rm -f ~/archbook/packages/packages_list && \
-  yay -Qq > ~/archbook/packages/packages_list && \
-  rsync -ah --progress ~/.bashrc . && \
-  rsync -ah --progress ~/.inputrc . && \
-#  rsync -ah --progress ~/.bash_history . && \
-  rsync -ah --progress ~/.config/hypr/ .config/hypr/ && \
-  rsync -ah --progress ~/.config/waybar/ .config/waybar/ && \
-  rsync -ah --progress ~/.config/dunst/ .config/dunst/ && \
-  rsync -ah --progress ~/.config/fuzzel/ .config/fuzzel/ && \
-  rsync -ah --progress ~/.config/foot/ .config/foot/ && \
-  rsync -ah --progress ~/.config/lf/ .config/lf/ && \
-  rsync -ah --progress ~/.config/wal/ .config/wal/ && \
-  rsync -ah --progress ~/.config/imv/ .config/imv/ && \
-  rsync -ah --progress ~/.config/mpv/ .config/mpv/ && \
-  rsync -ah --progress ~/.config/qutebrowser/ .config/qutebrowser/ && \
-  rsync -ah --progress ~/.local/bin/ .local/bin/ && \
-  cd ~/archbook && \
+  # Remove o arquivo de pacotes antigo antes de criar o novo
+  rm -f ./packages/packages_list && \
+  yay -Qq > ./packages/packages_list && \
+  # Limpa as pastas de destino para não sobrar lixo de versões anteriores
+  rm -rf .config/ .local/bin/ .bashrc .inputrc && \
+  mkdir -p .config .local/bin packages && \
+  # Inicia as cópias
+  rsync -ah ~/.bashrc . && \
+  rsync -ah ~/.inputrc . && \
+  # Loop para as pastas do .config
+  for d in hypr waybar dunst fuzzel foot lf wal imv mpv qutebrowser; do \
+    [ -d "$HOME/.config/$d" ] && rsync -ah --delete "$HOME/.config/$d/" ".config/$d/"; \
+  done && \
+  # Copia seus scripts pessoais
+  rsync -ah --delete ~/.local/bin/ .local/bin/ && \
+  # Git
   git add . && \
   git commit -m "sync: $(date +%Y-%m-%d)" && \
   git pull --rebase origin main && \
   git push && \
   cd -'
+
+
 
 # --- AUTOMAÇÃO YOUTUBE-DL (YT-DLP) ---
 

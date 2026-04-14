@@ -1,7 +1,7 @@
 # Archbook — (Fernando Bezerra <https://fernandobezerra.xyz>'s dotfiles)
 
 ## Hardware
-- MacBook A1278 (2012)
+- MacBook A1278
 - Arch Linux + Hyprland (Wayland)
 - Intel HD 4000 + NVIDIA GeForce 320M
 

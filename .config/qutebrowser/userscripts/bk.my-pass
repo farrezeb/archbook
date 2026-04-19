@@ -1,5 +1,5 @@
 #!/bin/bash
-# my-pass - versão com JavaScript minificado em uma linha
+# my-pass - versão com debug de seletores
 
 export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/.local/bin:$PATH"
 
@@ -38,22 +38,61 @@ fi
 password=$(echo "$full_entry" | head -n 1)
 username=$(echo "$full_entry" | grep "^login:" | head -n 1 | sed 's/^login: //')
 
-echo "message-info '🔑 Senha carregada'" >> "$QUTE_FIFO"
-echo "message-info '👤 Usuário: $username'" >> "$QUTE_FIFO"
+echo "message-info '🔑 OK'" >> "$QUTE_FIFO"
+echo "message-info '👤 User: ${username:0:15}...'" >> "$QUTE_FIFO"
 
 if [ -n "$password" ]; then
-    # Minifica o JavaScript em uma linha só - VERSÃO SIMPLIFICADA SEM LOOP
-    if [ -n "$username" ]; then
-        # Usa múltiplos querySelector em sequência (mais simples, sem loop)
-        js_code="(function(){var u=document.querySelector('input[type=email]')||document.querySelector('input[name=email]')||document.querySelector('input[id=email]')||document.querySelector('input[name=username]')||document.querySelector('input[id=username]')||document.querySelector('input[name=login]')||document.querySelector('input[id=login]')||document.querySelector('input[name=account]')||document.querySelector('input[id=account]');var p=document.querySelector('input[type=password]');if(u){u.value='$username';u.dispatchEvent(new Event('input',{bubbles:true}));u.dispatchEvent(new Event('change',{bubbles:true}));}if(p){p.value='$password';p.dispatchEvent(new Event('input',{bubbles:true}));p.dispatchEvent(new Event('change',{bubbles:true}));}return'u:'+(u?'OK':'NA')+',p:'+(p?'OK':'NA');})();"
+    jsfile="/tmp/qute_pass_$$.js"
 
-        echo "jseval $js_code" >> "$QUTE_FIFO"
-        echo "message-info '✅ Preenchendo'" >> "$QUTE_FIFO"
+    if [ -n "$username" ]; then
+        # JavaScript com tentativa de múltiplos seletores e debug
+        cat > "$jsfile" << 'EOF'
+(function(){
+    var selectors=[
+        'input[type=email]','input[name=email]','input[id=email]',
+        'input[name=username]','input[id=username]',
+        'input[name=login]','input[id=login]',
+        'input[name=user]','input[id=user]',
+        'input[name=usuario]','input[id=usuario]',
+        'input[name=identificador]','input[id=identificador]',
+        'input[name=cpf]','input[id=cpf]',
+        'input[name=cnpj]','input[id=cnpj]',
+        'input[type=text]','input:not([type])'
+    ];
+    var u=null;
+    for(var i=0;i<selectors.length;i++){
+        u=document.querySelector(selectors[i]);
+        if(u)break;
+    }
+    var p=document.querySelector('input[type=password]');
+    if(u){u.value='USERNAME';u.dispatchEvent(new Event('input',{bubbles:true}));}
+    if(p){p.value='PASSWORD';p.dispatchEvent(new Event('input',{bubbles:true}));}
+    return'u:'+(u?u.name||u.id||'found':'NA')+',p:'+(p?'OK':'NA');
+})();
+EOF
+
+        # Substitui placeholders
+        sed -i "s/USERNAME/$(echo "$username" | sed 's/[&/\]/\\&/g')/g" "$jsfile"
+        sed -i "s/PASSWORD/$(echo "$password" | sed 's/[&/\]/\\&/g')/g" "$jsfile"
+
+        # Converte para uma linha só
+        jscode=$(tr -d '\n' < "$jsfile")
+        rm -f "$jsfile"
+
+        echo "jseval $jscode" >> "$QUTE_FIFO"
+        echo "message-info '✅ Enviado'" >> "$QUTE_FIFO"
     else
-        js_code="(function(){var p=document.querySelector('input[type=password]');if(p){p.value='$password';p.dispatchEvent(new Event('input',{bubbles:true}));return'ok';}return'no-pass';})();"
-        echo "jseval $js_code" >> "$QUTE_FIFO"
+        # Só senha
+        echo -n "(function(){var p=document.querySelector('input[type=password]');if(p){p.value='" > "$jsfile"
+        echo -n "$password" | sed "s/'/\\'/g" >> "$jsfile"
+        echo -n "';p.dispatchEvent(new Event('input',{bubbles:true}));return'ok';}return'no-pass';})();" >> "$jsfile"
+
+        jscode=$(cat "$jsfile")
+        rm -f "$jsfile"
+
+        echo "jseval $jscode" >> "$QUTE_FIFO"
         echo "message-info '✅ Senha apenas'" >> "$QUTE_FIFO"
     fi
 else
-    echo "message-error '❌ Senha vazia'" >> "$QUTE_FIFO"
+    echo "message-error '❌ Sem senha'" >> "$QUTE_FIFO"
 fi

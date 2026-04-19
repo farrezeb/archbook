@@ -81,6 +81,7 @@ EOF
 
     # AC / SERVIDOR - caminho absoluto para hyprctl
     cat > /run/swayidle_ac.conf << 'EOF'
+timeout 400 '/usr/local/bin/lockscreen'
 timeout 600 '/usr/bin/hyprctl dispatch dpms off' resume '/usr/bin/hyprctl dispatch dpms on'
 EOF
 }

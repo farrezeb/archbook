@@ -116,7 +116,6 @@ gawk
 gc
 gcc
 gcc-libs
-gd
 gdbm
 gdk-pixbuf2
 gettext
@@ -431,7 +430,6 @@ libxkbfile
 libxklavier
 libxml2
 libxmu
-libxpm
 libxpresent
 libxrandr
 libxrender
@@ -468,7 +466,6 @@ lv2
 lz4
 lzo
 m4
-mailcap
 make
 mbpfan
 md4c
@@ -493,7 +490,6 @@ neon
 nettle
 networkmanager
 nftables
-nginx
 ninja
 noto-fonts-emoji
 npth
@@ -534,9 +530,6 @@ perl
 perl-error
 perl-mailtools
 perl-timedate
-php
-php-fpm
-php-gd
 pinentry
 pipewire
 pipewire-alsa

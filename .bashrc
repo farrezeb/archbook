@@ -398,27 +398,9 @@ buscar() {
 #######################################################
 
 # Limpeza do sistema (com confirmação)
-alias cleanup='echo "Limpando Capturas..." && \
-    rm -f "$HOME/media/Capturas\ de\ tela/"* 2>/dev/null && \
-    echo "Limpando Cache..." && \
-    sudo paccache -rk2 && \
-    echo "Removendo Órfãos..." && \
-    yay -Sc --noconfirm && \
-    (yay -Yc --noconfirm || true) && \
-    echo "Removendo Órfãos Pacman..." && \
-    (sudo pacman -Rns $(pacman -Qdtq) 2>/dev/null || echo "Nenhum órfão encontrado.") && \
-    echo "Limpando Snapshots (mantendo os 3 últimos)..." && \
-    sudo timeshift --list | grep -E "^[0-9]" | awk "{print \$3}" | head -n -3 | xargs -I {} sudo timeshift --delete --snapshot {} --scripted && \
-    echo "Logs..." && \
-    sudo journalctl --vacuum-time=30d && \
-    (sudo find /var/log/timeshift/ -type f -mtime +7 -delete 2>/dev/null || true) && \
-    echo "Status Final:" && \
-    eza -lh --icons --group-directories-first /var/log/timeshift/ 2>/dev/null && \
-    find ~/dl -name "snapshot_top_*.txt" -mtime +7 -delete && \
-    echo "Limpando caches e thumbnails..." && \
-    rm -rf ~/.cache/qutebrowser/qtsql/*.sqlite-wal ~/.cache/thumbnails/* ~/.config/micro/buffers/* && \
-    echo "Concluído!"'
-
+# Limpeza do sistema
+alias cleanup='~/.local/bin/sistema-clean'
+alias cleanup-dry='~/.local/bin/sistema-clean --dry-run'
 
 # Fazer backup de configuracoes
 alias meubkp='tar -czvf ~/hyprland_backup_$(date +%Y%m%d).tar.gz ~/.config/hypr ~/.config/waybar ~/.config/dunst ~/.config/fuzzel ~/.config/qutebrowser ~/.local/bin/ ~/.config/foot ~/.config/lf  ~/.config/wal ~/.config/imv ~/.config/mpv /usr/share/meus_wallpapers/ ~/.bashrc ~/.inputrc'
@@ -558,6 +540,7 @@ alias github='cd ~/archbook && \
   # Inicia as cópias
   rsync -ah ~/.bashrc . && \
   rsync -ah ~/.inputrc . && \
+#  rsync -ah --progress /usr/share/meus_wallpapers/ wallpapers/ && \
   # Loop para as pastas do .config
   for d in hypr waybar dunst fuzzel foot lf wal imv mpv qutebrowser; do \
     [ -d "$HOME/.config/$d" ] && rsync -ah --delete "$HOME/.config/$d/" ".config/$d/"; \
@@ -570,7 +553,6 @@ alias github='cd ~/archbook && \
   git pull --rebase origin main && \
   git push && \
   cd -'
-
 
 
 # --- AUTOMAÇÃO YOUTUBE-DL (YT-DLP) ---

@@ -540,7 +540,7 @@ alias github='cd ~/archbook && \
   # Inicia as cópias
   rsync -ah ~/.bashrc . && \
   rsync -ah ~/.inputrc . && \
-#  rsync -ah --progress /usr/share/meus_wallpapers/ wallpapers/ && \
+  rsync -ah --progress /usr/share/meus_wallpapers/ wallpapers/ && \
   # Loop para as pastas do .config
   for d in hypr waybar dunst fuzzel foot lf wal imv mpv qutebrowser; do \
     [ -d "$HOME/.config/$d" ] && rsync -ah --delete "$HOME/.config/$d/" ".config/$d/"; \

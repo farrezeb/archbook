@@ -137,7 +137,9 @@ cmd copy_path ${{
 cmd delete ${{
     printf "Deletar selecionados? [y/N] "
     read ans
-    [ "$ans" = "y" ] && rm -rf -- $fx
+    if [ "$ans" = "y" ]; then
+        sudo rm -rf -- $fx && notify-send "lf" "Deletado com sucesso!" || notify-send "lf" "Erro ao deletar!"
+    fi
 }}
 
 # Criar diretorio no lfrc

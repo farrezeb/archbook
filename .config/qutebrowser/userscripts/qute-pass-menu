@@ -1,7 +1,0 @@
-#!/bin/bash
-# Qutebrowser wrapper para pass-menu
-
-export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/.local/bin:$PATH"
-export GPG_TTY=$(tty)
-
-~/.local/bin/pass-menu

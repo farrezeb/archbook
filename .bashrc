@@ -530,29 +530,7 @@ alias gc='git commit'
 alias gp='pass git pull && pass git push'
 alias gl='git log --oneline --graph --all'
 
-alias github='cd ~/archbook && \
-  # Remove o arquivo de pacotes antigo antes de criar o novo
-  rm -f ./packages/packages_list && \
-  yay -Qq > ./packages/packages_list && \
-  # Limpa as pastas de destino para não sobrar lixo de versões anteriores
-  rm -rf .config/ .local/bin/ .bashrc .inputrc && \
-  mkdir -p .config .local/bin packages && \
-  # Inicia as cópias
-  rsync -ah ~/.bashrc . && \
-  rsync -ah ~/.inputrc . && \
-  rsync -ah --progress /usr/share/meus_wallpapers/ wallpapers/ && \
-  # Loop para as pastas do .config
-  for d in hypr waybar dunst fuzzel foot lf wal imv mpv qutebrowser; do \
-    [ -d "$HOME/.config/$d" ] && rsync -ah --delete "$HOME/.config/$d/" ".config/$d/"; \
-  done && \
-  # Copia seus scripts pessoais
-  rsync -ah --delete ~/.local/bin/ .local/bin/ && \
-  # Git
-  git add . && \
-  git commit -m "sync: $(date +%Y-%m-%d)" && \
-  git pull --rebase origin main && \
-  git push && \
-  cd -'
+alias github='~/.local/bin/sync.sh'
 
 
 # --- AUTOMAÇÃO YOUTUBE-DL (YT-DLP) ---

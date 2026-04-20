@@ -1,0 +1,33 @@
+{
+    "fields": {
+        "billingAddress": "Endereço",
+        "cContato": "Contato",
+        "cNomeFantasia": "Nome Fantasia",
+        "cCnpj": "CNPJ",
+        "cEnderecoCompleto": "Endereço Completo",
+        "cSocio1Nome": "Sócio 1 - Nome",
+        "cSocio1Cargo": "Sócio 1 - Cargo",
+        "cSocio2Nome": "Sócio 2 - Nome",
+        "cSocio2Cargo": "Sócio 2 - Cargo",
+        "cSocio3Nome": "Sócio 3 - Nome",
+        "cSocio3Cargo": "Sócio 3 - Cargo",
+        "cTodosSocios": "Todos os Sócios",
+        "cDataAbertura": "Data de Abertura",
+        "cCnaePrincipal": "CNAE Principal",
+        "cCnaeSecundario": "CNAE Secundário",
+        "cCapitalSocial": "Capital Social",
+        "cProspectStatus": "Status do Prospect",
+        "sicCode": "CNPJ2"
+    },
+    "options": {
+        "phoneNumber": {
+            "Office": "Comercial",
+            "Mobile": "Celular"
+        },
+        "cProspectStatus": {
+            "": "",
+            "Iniciado": "Iniciado",
+            "Não Contactado": "Não Contactado"
+        }
+    }
+}

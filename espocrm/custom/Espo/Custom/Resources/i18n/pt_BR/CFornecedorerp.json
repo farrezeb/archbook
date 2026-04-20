@@ -1,0 +1,11 @@
+{
+    "labels": {
+        "Create CFornecedorerp": "Criar Fornecedor ERP"
+    },
+    "fields": {
+        "opportunities": "Opportunities"
+    },
+    "links": {
+        "opportunities": "Opportunities"
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "collection": {
+        "orderBy": "order",
+        "order": "asc",
+        "textFilterFields": [
+            "name",
+            "bodyPlain"
+        ],
+        "fullTextSearch": true,
+        "countDisabled": false
+    },
+    "optimisticConcurrencyControl": true
+}

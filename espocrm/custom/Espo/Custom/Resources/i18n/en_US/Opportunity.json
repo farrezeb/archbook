@@ -1,0 +1,11 @@
+{
+    "fields": {
+        "cFornecedorerp": "Fornecedorerp",
+        "cValorMensal": "Mensalidade",
+        "cValorMensalCurrency": "Mensalidade (Moeda)",
+        "cValorMensalConverted": "Mensalidade (Convertido)"
+    },
+    "links": {
+        "cFornecedorerp": "Fornecedorerp"
+    }
+}

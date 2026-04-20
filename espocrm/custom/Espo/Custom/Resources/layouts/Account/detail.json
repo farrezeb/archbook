@@ -1,0 +1,101 @@
+[
+    {
+        "rows": [
+            [
+                {
+                    "name": "cCnpj"
+                }
+            ],
+            [
+                {
+                    "name": "cDataAbertura"
+                }
+            ],
+            [
+                {
+                    "name": "cNomeFantasia"
+                }
+            ],
+            [
+                {
+                    "name": "cCapitalSocial"
+                }
+            ],
+            [
+                {
+                    "name": "cCnaePrincipal"
+                }
+            ],
+            [
+                {
+                    "name": "cCnaeSecundario"
+                }
+            ]
+        ],
+        "style": "default",
+        "noteStyle": "info",
+        "label": ""
+    },
+    {
+        "rows": [
+            [
+                {
+                    "name": "name"
+                }
+            ],
+            [
+                {
+                    "name": "emailAddress"
+                },
+                {
+                    "name": "phoneNumber"
+                }
+            ],
+            [
+                {
+                    "name": "billingAddress"
+                }
+            ]
+        ],
+        "style": "default",
+        "label": "Overview"
+    },
+    {
+        "rows": [
+            [
+                {
+                    "name": "industry"
+                }
+            ]
+        ],
+        "style": "default",
+        "label": "Details"
+    },
+    {
+        "rows": [
+            [
+                {
+                    "name": "cSocio1Nome"
+                },
+                {
+                    "name": "cSocio1Cargo"
+                }
+            ]
+        ],
+        "style": "default",
+        "noteStyle": "info",
+        "label": ""
+    },
+    {
+        "rows": [
+            [
+                {
+                    "name": "cTodosSocios"
+                }
+            ]
+        ],
+        "style": "default",
+        "noteStyle": "info",
+        "label": ""
+    }
+]

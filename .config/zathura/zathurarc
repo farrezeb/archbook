@@ -1,0 +1,12 @@
+# Salvar histórico e posição de leitura
+set save-database-backend sqlite
+
+# Cores (Exemplo de Dark Mode)
+set recolor "true"
+set recolor-keephue "true"
+
+# Copiar para o clipboard do sistema (Ctrl+C no modo de seleção)
+set selection-clipboard clipboard
+
+# Abrir em tela cheia (opcional)
+# set fullscreen true

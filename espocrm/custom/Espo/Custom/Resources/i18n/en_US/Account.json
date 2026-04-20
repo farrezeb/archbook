@@ -1,0 +1,12 @@
+{
+    "fields": {
+        "cCapitalSocial": "Capital Social",
+        "cCnpj": "Cnpj"
+    },
+    "options": {
+        "cProspectStatus": {
+            "Iniciado": "Iniciado",
+            "Não Contactado": "Não Contactado"
+        }
+    }
+}

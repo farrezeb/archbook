@@ -1,0 +1,13 @@
+{
+    "clipboard": "terminal",
+    "colorscheme": "simple",
+    "autosu": true,
+    "indentchar": " ",
+    "tabsize": 4,
+    "mouse": true,
+    "rmtrailingws": true,
+    "saveundo": true,
+    "mkparents": true,
+    "cursorline": true,
+    "tabstospaces": true
+}

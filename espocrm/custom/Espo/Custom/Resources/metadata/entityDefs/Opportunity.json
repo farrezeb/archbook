@@ -1,0 +1,54 @@
+{
+    "fields": {
+        "stage": {
+            "style": {
+                "Prospecting": null,
+                "Qualification": "info",
+                "Proposal": "primary",
+                "Negotiation": "warning",
+                "Closed Won": "success",
+                "Closed Lost": "danger"
+            },
+            "probabilityMap": {
+                "Prospecting": 0,
+                "Qualification": 20,
+                "Proposal": 50,
+                "Negotiation": 80,
+                "Closed Won": 100,
+                "Closed Lost": 0
+            }
+        },
+        "amount": {
+            "required": false
+        },
+        "closeDate": {
+            "required": false
+        },
+        "cFornecedorerp": {
+            "type": "link"
+        },
+        "cValorMensal": {
+            "type": "currency",
+            "isCustom": true
+        }
+    },
+    "collection": {
+        "orderBy": "createdAt",
+        "order": "desc",
+        "textFilterFields": [
+            "name"
+        ],
+        "fullTextSearch": false,
+        "countDisabled": false
+    },
+    "optimisticConcurrencyControl": true,
+    "links": {
+        "cFornecedorerp": {
+            "type": "belongsTo",
+            "foreign": "opportunities",
+            "entity": "CFornecedorerp",
+            "audited": false,
+            "isCustom": true
+        }
+    }
+}

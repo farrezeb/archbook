@@ -1,0 +1,8 @@
+{
+    "scopeNames": {
+        "Opportunity": "Prospect"
+    },
+    "scopeNamesPlural": {
+        "Opportunity": "Prospects"
+    }
+}

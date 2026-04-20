@@ -1,0 +1,25 @@
+[
+    {
+        "name": "account"
+    },
+    {
+        "name": "closeDate",
+        "align": "right",
+        "isMuted": true
+    },
+    {
+        "name": "amount",
+        "align": "right",
+        "isLarge": true
+    },
+    {
+        "name": "cFornecedorerp"
+    },
+    {
+        "name": "cValorMensal"
+    },
+    {
+        "name": "assignedUser",
+        "hidden": true
+    }
+]

@@ -1,0 +1,34 @@
+[
+    {
+        "name": "name",
+        "width": 40,
+        "link": true,
+        "align": "left"
+    },
+    {
+        "name": "cDataAbertura",
+        "width": 16
+    },
+    {
+        "name": "industry",
+        "width": 13,
+        "align": "left"
+    },
+    {
+        "name": "cProspectStatus",
+        "width": 16
+    },
+    {
+        "name": "billingAddressCity",
+        "width": 16
+    },
+    {
+        "name": "billingAddressState",
+        "width": 8,
+        "align": "left"
+    },
+    {
+        "name": "cCapitalSocial",
+        "width": 16
+    }
+]

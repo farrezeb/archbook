@@ -1,0 +1,131 @@
+{
+    "fields": {
+        "phoneNumber": {
+            "typeList": [
+                "Office",
+                "Mobile"
+            ],
+            "defaultType": "Mobile"
+        },
+        "cContato": {
+            "type": "varchar",
+            "maxLength": 249,
+            "pattern": "$noBadCharacters",
+            "audited": true,
+            "options": [],
+            "isCustom": true
+        },
+        "cNomeFantasia": {
+            "type": "varchar",
+            "maxLength": 100,
+            "options": [],
+            "isCustom": true
+        },
+        "cCnpj": {
+            "type": "varchar",
+            "maxLength": 16,
+            "options": [],
+            "isCustom": true
+        },
+        "cEnderecoCompleto": {
+            "type": "text",
+            "rowsMin": 2,
+            "isCustom": true
+        },
+        "cSocio1Nome": {
+            "type": "varchar",
+            "maxLength": 100,
+            "options": [],
+            "isCustom": true
+        },
+        "cSocio1Cargo": {
+            "type": "varchar",
+            "maxLength": 50,
+            "options": [],
+            "isCustom": true
+        },
+        "cSocio2Nome": {
+            "type": "varchar",
+            "maxLength": 100,
+            "options": [],
+            "isCustom": true
+        },
+        "cSocio2Cargo": {
+            "type": "varchar",
+            "maxLength": 50,
+            "options": [],
+            "isCustom": true
+        },
+        "cSocio3Nome": {
+            "type": "varchar",
+            "maxLength": 100,
+            "options": [],
+            "isCustom": true
+        },
+        "cSocio3Cargo": {
+            "type": "varchar",
+            "maxLength": 50,
+            "options": [],
+            "isCustom": true
+        },
+        "cTodosSocios": {
+            "type": "text",
+            "rowsMin": 2,
+            "isCustom": true
+        },
+        "cDataAbertura": {
+            "notNull": false,
+            "type": "date",
+            "isCustom": true
+        },
+        "cCnaePrincipal": {
+            "type": "varchar",
+            "maxLength": 100,
+            "options": [],
+            "isCustom": true
+        },
+        "cCnaeSecundario": {
+            "type": "text",
+            "rowsMin": 2,
+            "isCustom": true
+        },
+        "cCapitalSocial": {
+            "type": "varchar",
+            "maxLength": 20,
+            "options": [],
+            "isCustom": true
+        },
+        "cProspectStatus": {
+            "type": "enum",
+            "required": true,
+            "options": [
+                "Iniciado",
+                "Não Contactado"
+            ],
+            "style": {
+                "Iniciado": "success",
+                "Não Contactado": "danger"
+            },
+            "maxLength": 100,
+            "isCustom": true,
+            "audited": false,
+            "labelType": null,
+            "default": "Não Contactado"
+        },
+        "sicCode": {
+            "options": []
+        }
+    },
+    "collection": {
+        "orderBy": "createdAt",
+        "order": "desc",
+        "textFilterFields": [
+            "name",
+            "emailAddress",
+            "sicCode"
+        ],
+        "fullTextSearch": false,
+        "countDisabled": false
+    },
+    "optimisticConcurrencyControl": true
+}

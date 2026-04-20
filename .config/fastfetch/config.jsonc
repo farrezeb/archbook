@@ -1,0 +1,56 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+
+  "logo": {
+    "type": "file",
+    "source": "small",
+    "width": 20,
+    "padding": {
+      "top": 1,
+      "right": 3
+    }
+  },
+
+  "modules": [
+    { "type": "title" },
+    "break",
+
+    { "type": "host", "key": " PC" },
+    { "type": "os", "key": "󰣇 OS" },
+    { "type": "kernel", "key": " Kernel" },
+    { "type": "uptime", "key": "󰅐 Uptime" },
+    {
+      "type": "command",
+      "key": "󰃭 Installed",
+      "shell": "/bin/sh",
+      "text": "date -d @$(stat -c %W /) '+%d/%m/%Y'"
+    },
+    { "type": "packages", "key": "󰏖 Pkgs" },
+
+    "break",
+
+    { "type": "wm", "key": " WM" },
+    { "type": "terminal", "key": " Term" },
+    { "type": "shell", "key": " Shell" },
+
+    "break",
+
+    {
+      "type": "cpu",
+      "key": " CPU",
+      "showTemperature": true,
+      "tempUnit": "C"
+    },
+    { "type": "memory", "key": " RAM" },
+    {
+      "type": "disk",
+      "key": "󰋊 Disk",
+      "folders": "/"
+    },
+
+    "break",
+
+    { "type": "battery", "key": "󰂄 Battery" },
+    { "type": "colors", "key": "󰏘 Colors", "symbol": "circle" }
+  ]
+}

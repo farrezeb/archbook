@@ -1,0 +1,66 @@
+services:
+  espocrm-db:
+    image: mariadb:10.11
+    container_name: espocrm-db
+    environment:
+      MARIADB_ROOT_PASSWORD: root_Chico1278@
+      MARIADB_DATABASE: espocrm
+      MARIADB_USER: espocrm_fbx
+      MARIADB_PASSWORD: Chico1278@
+    volumes:
+      - espocrm-db:/var/lib/mysql
+    networks:
+      - espocrm-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      start_period: 30s
+      timeout: 5s
+      retries: 3
+
+  espocrm:
+    image: espocrm/espocrm:latest
+    container_name: espocrm-app
+    environment:
+      ESPOCRM_DATABASE_PLATFORM: Mysql
+      ESPOCRM_DATABASE_HOST: espocrm-db
+      ESPOCRM_DATABASE_PORT: 3306
+      ESPOCRM_DATABASE_NAME: espocrm
+      ESPOCRM_DATABASE_USER: espocrm_fbx
+      ESPOCRM_DATABASE_PASSWORD: Chico1278@
+      ESPOCRM_SITE_URL: http://archbook:8080
+      ESPOCRM_ADMIN_USERNAME: f
+      ESPOCRM_ADMIN_PASSWORD: f
+      ESPOCRM_CONFIG_DATABASE_CHARSET: utf8mb4
+      ESPOCRM_CONFIG_USE_WEB_SOCKET: "false"
+    volumes:
+      - ./espocrm-data:/var/www/html
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "0.0.0.0:8080:80"
+    restart: unless-stopped
+    depends_on:
+      espocrm-db:
+        condition: service_healthy
+    networks:
+      - espocrm-net
+
+  espocrm-daemon:
+    image: espocrm/espocrm:latest
+    container_name: espocrm-daemon
+    volumes:
+      - ./espocrm-data:/var/www/html
+    restart: unless-stopped
+    entrypoint: docker-daemon.sh
+    networks:
+      - espocrm-net
+    depends_on:
+      - espocrm
+
+volumes:
+  espocrm-db:
+
+networks:
+  espocrm-net:
+    driver: bridge

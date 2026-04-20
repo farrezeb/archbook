@@ -1,0 +1,24 @@
+{
+    "options": {
+        "stage": {
+            "Prospecting": "Prospectando",
+            "Qualification": "Apresentação / Reunião",
+            "Proposal": "Proposta Enviada",
+            "Negotiation": "Negociação",
+            "Closed Won": "Fechado Ganho",
+            "Closed Lost": "Perdida"
+        }
+    },
+    "labels": {
+        "Create Opportunity": "Criar Prospect"
+    },
+    "fields": {
+        "cFornecedorerp": "Fornecedorerp",
+        "cValorMensal": "Mensalidade",
+        "cValorMensalCurrency": "Mensalidade (Moeda)",
+        "cValorMensalConverted": "Mensalidade (Convertido)"
+    },
+    "links": {
+        "cFornecedorerp": "Fornecedorerp"
+    }
+}

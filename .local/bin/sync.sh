@@ -38,18 +38,28 @@ done
 echo "→ Copiando scripts pessoais..."
 rsync -ah --delete ~/.local/bin/ .local/bin/
 
-# ─── EspoCRM ────────────────────────────────────────────────────────────────
+# ─── EspoCRM — gera .env via pass ───────────────────────────────────────────
+echo "→ Gerando .env do EspoCRM via pass..."
+cat > "$HOME/espocrm-docker/.env" <<EOF
+MARIADB_ROOT_PASSWORD=$(pass show "docker compose/mariadb_root_password" | head -1)
+MARIADB_DATABASE=espocrm
+MARIADB_USER=espocrm_fbx
+MARIADB_PASSWORD=$(pass show "docker compose/mariadb_password" | head -1)
+ESPOCRM_SITE_URL=http://archbook:8080
+ESPOCRM_ADMIN_USERNAME=$(pass show espocrm/farrezeb | grep 'login:' | awk '{print $2}')
+ESPOCRM_ADMIN_PASSWORD=$(pass show espocrm/farrezeb | head -1)
+EOF
+
+# ─── EspoCRM — sincroniza customizações e compose ───────────────────────────
 echo "→ Copiando customizações do EspoCRM..."
 mkdir -p espocrm/custom
 
-# Customizações (campos, entidades, layouts personalizados)
 if [ -d "$HOME/espocrm-docker/espocrm-data/custom" ]; then
   rsync -ah --delete "$HOME/espocrm-docker/espocrm-data/custom/" espocrm/custom/
 else
   echo "  ⚠ Pasta custom do EspoCRM não encontrada, pulando..."
 fi
 
-# docker-compose.yml
 if [ -f "$HOME/espocrm-docker/docker-compose.yml" ]; then
   rsync -ah "$HOME/espocrm-docker/docker-compose.yml" espocrm/
 else

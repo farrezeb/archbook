@@ -576,34 +576,6 @@ alias espocrm="~/.local/bin/espocrm.sh"
 alias espocrm-db='sudo docker exec espocrm-app env | grep -i -E "(db|mysql|password|user)"'
 
 # Controle de Senhas GPG
-# Alias para inserir senha no formato padrão (senha + login + url)
-pass-insert() {
-    if [ $# -lt 2 ]; then
-        echo "Uso: pass-insert <caminho> <email/usuario> [url]"
-        echo "Exemplo: pass-insert facebook/farrezeb f.arrezeb@gmail.com facebook.com"
-        return 1
-    fi
-
-    local path="$1"
-    local login="$2"
-    local url="${3:-$path}"  # Se não informar URL, usa o path (ex: facebook.com)
-
-    # Extrai domínio do path se URL não fornecida
-    if [ -z "$3" ]; then
-        url=$(echo "$path" | cut -d'/' -f1)
-    fi
-
-    echo "Inserindo: $path"
-    echo "Login: $login"
-    echo "URL: $url"
-    echo "Digite a senha (será oculta) e pressione Enter, depois Ctrl+D:"
-
-    # Cria entrada com formato padrão
-    printf "%s\nlogin: %s\nurl: %s\n" "$(read -s password; echo "$password")" "$login" "$url" | pass insert -m "$path"
-
-    echo "✅ Entrada $path criada com sucesso!"
-}
-
 pass-new() {
     echo "📁 Caminho (ex: facebook/farrezeb):"
     read path
@@ -644,5 +616,3 @@ pass-new() {
         return 1
     fi
 }
-
-alias pn='pass-new'

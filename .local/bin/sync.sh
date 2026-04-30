@@ -24,7 +24,11 @@ for d in \
   bat btop zathura swaylock swayidle qt6ct nwg-look fastfetch micro; do
   if [ -d "$HOME/.config/$d" ]; then
     mkdir -p ".config/$d"
-    rsync -ah --delete "$HOME/.config/$d/" ".config/$d/"
+    if [ "$d" = "micro" ]; then
+      rsync -ah --delete --exclude="buffers/" "$HOME/.config/$d/" ".config/$d/"
+    else
+      rsync -ah --delete "$HOME/.config/$d/" ".config/$d/"
+    fi
   fi
 done
 

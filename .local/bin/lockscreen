@@ -1,0 +1,36 @@
+#!/bin/bash
+# Trava de segurança — evita múltiplas instâncias
+pgrep -x swaylock > /dev/null && exit 0
+
+# Carrega cores do Pywal com fallback
+if [ -f "$HOME/.cache/wal/colors.sh" ]; then
+    source "$HOME/.cache/wal/colors.sh"
+else
+    color1="5294e2"
+    color2="a9b7c6"
+    foreground="ffffff"
+fi
+
+# Wallpaper com fallback para cor sólida
+WALLPAPER=$(cat "$HOME/.cache/wal/wal" 2>/dev/null)
+if [ -n "$WALLPAPER" ] && [ -f "$WALLPAPER" ]; then
+    WALLPAPER_CMD="-i $WALLPAPER"
+else
+    WALLPAPER_CMD="-c 111111"
+fi
+
+swaylock -f $WALLPAPER_CMD \
+    --clock \
+    --indicator \
+    --indicator-radius 100 \
+    --indicator-thickness 7 \
+    --effect-vignette 0.2:0.2 \
+    --ring-color "${color1:1}" \
+    --key-hl-color "${color2:1}" \
+    --text-color "${foreground:1}" \
+    --inside-color 00000088 \
+    --line-color 00000000 \
+    --separator-color 00000000 \
+    --fade-in 0.1 \
+    --datestr "%d/%m/%Y" \
+    --timestr "%H:%M"

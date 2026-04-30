@@ -616,3 +616,41 @@ pass-new() {
         return 1
     fi
 }
+
+# ─── TOPGRADE ALIASES ───
+
+# Atualização completa (padrão)
+alias update='topgrade'
+
+# Atualização rápida - só repos oficiais (sem AUR)
+alias update-fast='topgrade --only system'
+
+# Atualização com limpeza agressiva
+alias update-clean='topgrade --cleanup'
+
+# Atualização silenciosa (logs apenas)
+alias update-quiet='topgrade > ~/.local/share/topgrade.log 2>&1'
+
+# Verificar o que seria atualizado (dry run)
+alias update-check='topgrade -n'
+
+# Atualizar só AUR (via yay, fora do topgrade)
+alias update-aur='yay -Sua'
+
+# Atualizar e depois limpar caches manualmente
+alias update-deep='topgrade && sudo pacman -Scc && yay -Sc'
+
+echo 'export DIFFPROG="micro"' >> ~/.bashrc
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"
+export DIFFPROG="micro"

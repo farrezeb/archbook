@@ -5,14 +5,11 @@
 # AC: nunca suspende, tela apaga apenas
 # BAT: suspende normalmente
 ########################################
-
 POWER_SUPPLY="/sys/class/power_supply/ADP1/online"
 LID_STATE="/proc/acpi/button/lid/LID0/state"
 LOG_ENABLED=true
 HYPR_USER="farrezeb"
 HYPR_UID=1000
-
-# Inicializar com estado atual para evitar ação na startup
 LAST_LID=""
 
 log() {
@@ -29,30 +26,41 @@ is_lid_closed() {
 
 hypr_sig() {
     find /run/user/${HYPR_UID}/hypr/ -maxdepth 1 -mindepth 1 -type d 2>/dev/null \
-        | xargs basename 2>/dev/null \
+        | xargs -I{} basename {} 2>/dev/null \
         | head -1
 }
 
-dpms_off() {
+hypr_cmd() {
     local sig
     sig=$(hypr_sig)
-    [ -z "$sig" ] && log "dpms_off: sem assinatura Hyprland, ignorando" && return
-    log "DPMS: apagando tela"
+    [ -z "$sig" ] && log "hypr_cmd: sem assinatura Hyprland, ignorando" && return 1
     sudo -u "$HYPR_USER" \
         XDG_RUNTIME_DIR="/run/user/${HYPR_UID}" \
         HYPRLAND_INSTANCE_SIGNATURE="$sig" \
-        /usr/bin/hyprctl dispatch dpms off 2>/dev/null
+        /usr/bin/hyprctl "$@" 2>/dev/null
+}
+
+dpms_off() {
+    log "DPMS: apagando tela"
+    hypr_cmd dispatch dpms off
 }
 
 dpms_on() {
-    local sig
-    sig=$(hypr_sig)
-    [ -z "$sig" ] && log "dpms_on: sem assinatura Hyprland, ignorando" && return
     log "DPMS: ligando tela"
-    sudo -u "$HYPR_USER" \
-        XDG_RUNTIME_DIR="/run/user/${HYPR_UID}" \
-        HYPRLAND_INSTANCE_SIGNATURE="$sig" \
-        /usr/bin/hyprctl dispatch dpms on 2>/dev/null
+    hypr_cmd dispatch dpms on
+}
+
+kill_swayidle() {
+    # Mata todos os processos swayidle e aguarda confirmação
+    pkill -9 swayidle 2>/dev/null
+    local tries=0
+    while pgrep -x swayidle > /dev/null && [ $tries -lt 10 ]; do
+        sleep 0.2
+        tries=$((tries + 1))
+    done
+    if pgrep -x swayidle > /dev/null; then
+        log "AVISO: swayidle ainda vivo após kill"
+    fi
 }
 
 lid_action() {
@@ -72,46 +80,46 @@ lid_action() {
 }
 
 create_configs() {
-    # BATERIA: dim → suspend (sem lock)
-    cat > /run/swayidle_bat.conf << 'EOF'
+    local lockscreen="/home/${HYPR_USER}/.local/bin/lockscreen"
+
+    # BATERIA: dim → lock → suspend
+    cat > /run/swayidle_bat.conf << EOF
 timeout 90  '/usr/bin/brightnessctl -s set 10%' resume '/usr/bin/brightnessctl -r'
-timeout 110 '/usr/local/bin/lockscreen'
+timeout 110 '${lockscreen}'
 timeout 150 '/usr/bin/systemctl suspend'
 EOF
 
-    # AC / SERVIDOR - caminho absoluto para hyprctl
-    cat > /run/swayidle_ac.conf << 'EOF'
-timeout 400 '/usr/local/bin/lockscreen'
+    # AC / SERVIDOR: lock após 400s, apaga tela após 600s
+    cat > /run/swayidle_ac.conf << EOF
+timeout 400 '${lockscreen}'
 timeout 600 '/usr/bin/hyprctl dispatch dpms off' resume '/usr/bin/hyprctl dispatch dpms on'
 EOF
 }
 
 switch_profile() {
-    pkill -9 swayidle 2>/dev/null
-    sleep 0.3
-
     local sig
     sig=$(hypr_sig)
-
     if [ -z "$sig" ]; then
-        log "switch_profile: Hyprland ainda não disponível, abortando swayidle"
+        log "switch_profile: Hyprland não disponível, abortando"
         return
     fi
 
+    kill_swayidle
+
     if is_on_ac; then
-        log "Perfil AC: idle 10min apaga tela, nunca suspende"
+        log "Perfil AC: lock 400s, apaga tela 600s, nunca suspende"
         sudo -u "$HYPR_USER" \
             XDG_RUNTIME_DIR="/run/user/${HYPR_UID}" \
             WAYLAND_DISPLAY="wayland-1" \
             HYPRLAND_INSTANCE_SIGNATURE="$sig" \
-            /usr/bin/swayidle -w -C /run/swayidle_ac.conf >/dev/null 2>&1 &
+            /usr/bin/swayidle -w -C /run/swayidle_ac.conf > /dev/null 2>&1 &
     else
-        log "Perfil Bateria: dim 90s → suspend 150s"
+        log "Perfil Bateria: dim 90s → lock 110s → suspend 150s"
         sudo -u "$HYPR_USER" \
             XDG_RUNTIME_DIR="/run/user/${HYPR_UID}" \
             WAYLAND_DISPLAY="wayland-1" \
             HYPRLAND_INSTANCE_SIGNATURE="$sig" \
-            /usr/bin/swayidle -w -C /run/swayidle_bat.conf >/dev/null 2>&1 &
+            /usr/bin/swayidle -w -C /run/swayidle_bat.conf > /dev/null 2>&1 &
     fi
 }
 
@@ -119,7 +127,6 @@ check_lid() {
     local current
     is_lid_closed && current="closed" || current="open"
 
-    # Na primeira execução, apenas registra sem executar ação
     if [ -z "$LAST_LID" ]; then
         LAST_LID="$current"
         log "Estado inicial da tampa: $current (sem ação)"
@@ -132,7 +139,6 @@ check_lid() {
     fi
 }
 
-# Aguarda Hyprland iniciar (máx 60s)
 wait_hyprland() {
     local tries=0
     log "Aguardando Hyprland..."
@@ -150,7 +156,6 @@ wait_hyprland() {
     return 1
 }
 
-# Função separada para monitorar apenas o lid
 monitor_lid() {
     while true; do
         sleep 2
@@ -164,19 +169,16 @@ wait_hyprland
 create_configs
 switch_profile
 
-# Inicializa LAST_LID antes de começar monitoramento
 is_lid_closed && LAST_LID="closed" || LAST_LID="open"
 log "Estado inicial definido: $LAST_LID"
 
-# Separar os loops de monitoramento (evita concorrência no pipe)
 monitor_lid &
 
 log "Monitorando eventos de energia..."
 udevadm monitor --subsystem-match=power_supply --property | while IFS= read -r line; do
     if echo "$line" | grep -q "POWER_SUPPLY_ONLINE="; then
-        sleep 0.3
+        sleep 0.5
         log "Evento AC detectado"
         switch_profile
-        # Não chama check_lid aqui para evitar duplicidade
     fi
 done

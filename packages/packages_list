@@ -56,8 +56,12 @@ cdparanoia
 cifs-utils
 cliphist
 clucene
+cmake
+compiler-rt
 containerd
 coreutils
+cpio
+cppdap
 cronie
 cryptsetup
 curl
@@ -396,6 +400,7 @@ liburing
 libusb
 libusbmuxd
 libutf8proc
+libuv
 libva
 libva-intel-driver
 libvdpau
@@ -453,6 +458,7 @@ linux-firmware-intel
 linux-firmware-whence
 linux-lts
 linux-lts-headers
+lld
 llhttp
 llvm-libs
 lm_sensors
@@ -615,11 +621,13 @@ readline
 redland
 reflector
 resvg
+rhash
 rsync
 rtkit
 rubberband
 run-parts
 runc
+rust
 rustdesk-bin
 samba
 sbc
@@ -665,6 +673,8 @@ tinysparql
 tlp
 tlp-rdw
 tomlplusplus
+topgrade
+topgrade-debug
 tpm2-tss
 tree
 tslib

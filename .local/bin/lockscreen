@@ -2,9 +2,15 @@
 # Trava de segurança — evita múltiplas instâncias
 pgrep -x swaylock > /dev/null && exit 0
 
+export HOME="/home/farrezeb"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/1000/bus"
+export WAYLAND_DISPLAY="wayland-1"
+export XDG_RUNTIME_DIR="/run/user/1000"
+
 # Carrega cores do Pywal com fallback
-if [ -f "$HOME/.cache/wal/colors.sh" ]; then
-    source "$HOME/.cache/wal/colors.sh"
+WAL_CACHE="/home/farrezeb/.cache/wal"
+if [ -f "${WAL_CACHE}/colors.sh" ]; then
+    source "${WAL_CACHE}/colors.sh"
 else
     color1="5294e2"
     color2="a9b7c6"
@@ -12,7 +18,7 @@ else
 fi
 
 # Wallpaper com fallback para cor sólida
-WALLPAPER=$(cat "$HOME/.cache/wal/wal" 2>/dev/null)
+WALLPAPER=$(cat "${WAL_CACHE}/wal" 2>/dev/null)
 if [ -n "$WALLPAPER" ] && [ -f "$WALLPAPER" ]; then
     WALLPAPER_CMD="-i $WALLPAPER"
 else

@@ -103,6 +103,8 @@ export EDITOR='micro'
 export VISUAL='micro'
 export GIT_EDITOR="micro"
 
+export DIFFPROG="micro"
+
 # --- VARIÁVEIS DE USUÁRIO (Para usar com: la $documentos, cp $downloads) ---
 export dl="$(xdg-user-dir DOWNLOAD)"      # Atalho curto $dl
 export docs="$(xdg-user-dir DOCUMENTS)"   # Atalho curto $docs
@@ -639,21 +641,3 @@ alias update-aur='yay -Sua'
 
 # Atualizar e depois limpar caches manualmente
 alias update-deep='topgrade && sudo pacman -Scc && yay -Sc'
-
-echo 'export DIFFPROG="micro"' >> ~/.bashrc
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"
-export DIFFPROG="micro"

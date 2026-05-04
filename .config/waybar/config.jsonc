@@ -17,6 +17,7 @@
 "battery",
 "network",
 "pulseaudio",
+"custom/dunst",
 "clock"
 ],
 
@@ -127,6 +128,17 @@
             "headset": " ",
             "default": ["", "", ""]
         }
+},
+
+"custom/dunst": {
+    "exec": "~/.config/waybar/scripts/dunst-history.sh",
+    "interval": 5,
+    "signal": 1,
+    "return-type": "json",
+    "format": "{text}",
+    "tooltip": true,
+    "on-click": "~/.config/waybar/scripts/dunst-mark-read.sh",
+    "on-click-right": "dunstctl history-clear && rm -f /tmp/dunst-seen-ids && pkill -RTMIN+1 waybar"
 },
 
 "clock": {

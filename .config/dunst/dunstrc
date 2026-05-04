@@ -18,19 +18,19 @@
    progress_bar_height = 8
 
 [urgency_low]
-   background = "#0b0c03"
-   foreground = "#e2e0dd"
-   frame_color = "#8C6F27"
+   background = "#100f11"
+   foreground = "#a7c1d0"
+   frame_color = "#32435F"
    timeout = 3
 
 [urgency_normal]
-   background = "#0b0c03"
-   foreground = "#e2e0dd"
-   frame_color = "#385A8F"
+   background = "#100f11"
+   foreground = "#a7c1d0"
+   frame_color = "#4D4A63"
    timeout = 5
 
 [urgency_critical]
-   background = "#0b0c03"
-   foreground = "#3F4C53"
-   frame_color = "#3F4C53"
+   background = "#100f11"
+   foreground = "#273C63"
+   frame_color = "#273C63"
    timeout = 0

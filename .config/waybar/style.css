@@ -96,6 +96,16 @@ window#waybar {
     color: @color1;
 }
 
+#custom-dunst {
+    padding: 0 10px;
+    margin: 0 3px;
+    color: @foreground;
+}
+
+#custom-dunst.zero {        /* sem notificações */
+    color: alpha(@foreground, 0.45);
+}
+
 /* Battery */
 #battery.warning:not(.charging) {
     color: @color3;

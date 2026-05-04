@@ -1,7 +1,6 @@
 ########################################
 # HYPRLAND 0.54.3 - MACBOOK A1278
-# BACKUP: 2026-05-01
-# CORRIGIDO: 2026-04-05 | ATUALIZADO: 2026-05-01
+# CORRIGIDO: 2026-04-05
 ########################################
 
 # --- Variáveis de Ambiente ---
@@ -95,23 +94,23 @@ exec-once = ~/.local/bin/power-monitor.sh > /dev/null 2>&1
 
 # --- Aparência e Layout ---
 general {
-    gaps_in = 4
-    gaps_out = 5
+    gaps_in = 5
+    gaps_out = 6
     border_size = 2
-    col.active_border = $color1 $color4 45deg
-    col.inactive_border = 0xff444444 0xff444444 45deg
+    col.active_border = $color0
+    col.inactive_border = $color7
     layout = master
 }
 
 decoration {
     rounding = 8
     active_opacity = 1.0
-    inactive_opacity = 0.75
+    inactive_opacity = 0.7
     fullscreen_opacity = 1.0
 
     dim_inactive = true
-    dim_strength = 0.12
-    dim_special = 0.25
+    dim_strength = 0.15
+    dim_special = 0.3
 
     shadow {
         enabled = false
@@ -122,17 +121,16 @@ decoration {
     }
 }
 
-# --- Animações Suaves (leves para HD 3000) ---
+# --- Animações Instantâneas ---
 animations {
     enabled = yes
     bezier = instant, 0.0, 0.0, 1.0, 1.0
-    bezier = smooth, 0.25, 0.1, 0.25, 1.0
 
-    animation = windows, 1, 4, smooth
-    animation = windowsOut, 1, 3, smooth, popin 95%
+    animation = windows, 1, 3, instant
+    animation = windowsOut, 1, 2, instant, popin 90%
     animation = border, 1, 5, instant
-    animation = fade, 1, 4, smooth
-    animation = workspaces, 1, 4, smooth, slide
+    animation = fade, 1, 3, instant
+    animation = workspaces, 1, 2, instant, slide
 }
 
 # --- Configurações de Layouts ---
@@ -150,24 +148,18 @@ master {
 }
 
 # ============================================
-# REGRAS DE JANELA (Sintaxe Hyprland 0.53+)
+# REGRAS DE JANELA
 # ============================================
 
-windowrule = match:class ^(Share|localsend)$, float 1
-windowrule = match:class ^(Share|localsend)$, center 1
-
-# Opacidade seletiva (sem blur = barato)
-windowrule = match:class ^(foot)$, opacity 0.9 override
-windowrule = match:class ^(qutebrowser)$, opacity 0.85 override
-windowrule = match:class ^(dunst)$, opacity 0.95 override
+windowrule = match:class ^(Share|localsend)$, float on
+windowrule = match:class ^(Share|localsend)$, center on
 
 # ============================================
-# REGRAS DE LAYER (Sintaxe Hyprland 0.53+)
+# REGRAS DE LAYER
 # ============================================
 
-layerrule = match:namespace ^selection$, no_anim 1
-layerrule = match:namespace ^hyprpicker$, no_anim 1
-layerrule = match:namespace ^wlogout$, no_anim 1
+layerrule = match:namespace ^selection$, no_anim on
+layerrule = match:namespace ^hyprpicker$, no_anim on
 
 # ============================================
 # ATALHOS DE TECLADO
@@ -298,9 +290,9 @@ binde = , up, resizeactive, 0 -20
 binde = , down, resizeactive, 0 20
 
 bind = , escape, submap, reset
-bind = , escape, exec, hyprctl keyword col.active_border "$color1 $color4 45deg"
+bind = , escape, exec, hyprctl keyword col.active_border "$color1"
 bind = , RETURN, submap, reset
-bind = , RETURN, exec, hyprctl keyword col.active_border "$color1 $color4 45deg"
+bind = , RETURN, exec, hyprctl keyword col.active_border "$color1"
 
 submap = reset
 

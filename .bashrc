@@ -522,3 +522,4 @@ pass-new() {
         return 1
     fi
 }
+

@@ -106,6 +106,24 @@ window#waybar {
     color: alpha(@foreground, 0.45);
 }
 
+#custom-dunst.new {
+    color: @color4;
+    font-weight: 600;
+}
+
+#custom-dunst.critical {
+    color: @color1;
+}
+
+#custom-dunst.normal {
+    color: @color3;
+}
+
+#custom-dunst.low {
+    color: @color6;
+}
+
+
 /* Battery */
 #battery.warning:not(.charging) {
     color: @color3;

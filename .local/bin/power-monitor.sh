@@ -12,6 +12,9 @@ HYPR_USER="farrezeb"
 HYPR_UID=1000
 LAST_LID=""
 
+# ── Trap para limpar processos filhos ao sair ──────────────────────────────────
+trap 'log "Power Manager encerrando"; kill $(jobs -p) 2>/dev/null; exit 0' EXIT INT TERM
+
 log() {
     [ "$LOG_ENABLED" = true ] && logger -t power-manager "$1" && echo "[$(date '+%H:%M:%S')] $1"
 }
@@ -24,8 +27,15 @@ is_lid_closed() {
     [ -f "$LID_STATE" ] && grep -q "closed" "$LID_STATE" 2>/dev/null
 }
 
+# ── Detecta WAYLAND_DISPLAY dinamicamente ─────────────────────────────────────
+get_wayland_display() {
+    local wl
+    wl=$(ls "/run/user/${HYPR_UID}/wayland-"* 2>/dev/null | head -1 | xargs -r basename)
+    echo "${wl:-wayland-1}"
+}
+
 hypr_sig() {
-    find /run/user/${HYPR_UID}/hypr/ -maxdepth 1 -mindepth 1 -type d 2>/dev/null \
+    find "/run/user/${HYPR_UID}/hypr/" -maxdepth 1 -mindepth 1 -type d 2>/dev/null \
         | xargs -I{} basename {} 2>/dev/null \
         | head -1
 }
@@ -51,7 +61,6 @@ dpms_on() {
 }
 
 kill_swayidle() {
-    # Mata todos os processos swayidle e aguarda confirmação
     pkill -9 swayidle 2>/dev/null
     local tries=0
     while pgrep -x swayidle > /dev/null && [ $tries -lt 10 ]; do
@@ -89,7 +98,7 @@ timeout 110 '${lockscreen}'
 timeout 150 '/usr/bin/systemctl suspend'
 EOF
 
-    # AC / SERVIDOR: lock após 400s, apaga tela após 600s
+    # AC / SERVIDOR: lock após 400s, apaga tela após 600s, nunca suspende
     cat > /run/swayidle_ac.conf << EOF
 timeout 400 '${lockscreen}'
 timeout 600 '/usr/bin/hyprctl dispatch dpms off' resume '/usr/bin/hyprctl dispatch dpms on'
@@ -97,27 +106,31 @@ EOF
 }
 
 switch_profile() {
-    local sig
+    local sig wayland_disp
     sig=$(hypr_sig)
     if [ -z "$sig" ]; then
         log "switch_profile: Hyprland não disponível, abortando"
         return
     fi
 
+    wayland_disp=$(get_wayland_display)
     kill_swayidle
 
+    # Pequena pausa para garantir que o socket Wayland está estável após troca de AC
+    sleep 1
+
     if is_on_ac; then
-        log "Perfil AC: lock 400s, apaga tela 600s, nunca suspende"
+        log "Perfil AC: lock 400s, apaga tela 600s, nunca suspende (Wayland: $wayland_disp)"
         sudo -u "$HYPR_USER" \
             XDG_RUNTIME_DIR="/run/user/${HYPR_UID}" \
-            WAYLAND_DISPLAY="wayland-1" \
+            WAYLAND_DISPLAY="$wayland_disp" \
             HYPRLAND_INSTANCE_SIGNATURE="$sig" \
             /usr/bin/swayidle -w -C /run/swayidle_ac.conf > /dev/null 2>&1 &
     else
-        log "Perfil Bateria: dim 90s → lock 110s → suspend 150s"
+        log "Perfil Bateria: dim 90s → lock 110s → suspend 150s (Wayland: $wayland_disp)"
         sudo -u "$HYPR_USER" \
             XDG_RUNTIME_DIR="/run/user/${HYPR_UID}" \
-            WAYLAND_DISPLAY="wayland-1" \
+            WAYLAND_DISPLAY="$wayland_disp" \
             HYPRLAND_INSTANCE_SIGNATURE="$sig" \
             /usr/bin/swayidle -w -C /run/swayidle_bat.conf > /dev/null 2>&1 &
     fi
@@ -175,10 +188,11 @@ log "Estado inicial definido: $LAST_LID"
 monitor_lid &
 
 log "Monitorando eventos de energia..."
-udevadm monitor --subsystem-match=power_supply --property | while IFS= read -r line; do
-    if echo "$line" | grep -q "POWER_SUPPLY_ONLINE="; then
+# --udev é necessário para capturar eventos com propriedades (POWER_SUPPLY_ONLINE etc.)
+udevadm monitor --udev --subsystem-match=power_supply | while IFS= read -r line; do
+    if echo "$line" | grep -q "power_supply"; then
         sleep 0.5
-        log "Evento AC detectado"
+        log "Evento AC detectado: $line"
         switch_profile
     fi
 done

@@ -90,6 +90,7 @@ dunst
 e2fsprogs
 efibootmgr
 efivar
+elfutils
 ell
 exfatprogs
 expat
@@ -120,6 +121,8 @@ gawk
 gc
 gcc
 gcc-libs
+gdb
+gdb-common
 gdbm
 gdk-pixbuf2
 gettext
@@ -646,6 +649,7 @@ smbclient
 snappy
 sndio
 sord
+source-highlight
 spandsp
 spdlog
 speex

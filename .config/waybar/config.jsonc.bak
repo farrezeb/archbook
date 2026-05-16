@@ -13,7 +13,6 @@
 ],
 
 "modules-right": [
-"custom/macbook-update",
 "bluetooth",
 "battery",
 "network",
@@ -23,7 +22,7 @@
 ],
 
 "custom/apple": {
-    "format": "  ",
+    "format": "  ",  // ícone Arch (ou  se preferir Mac)
     "tooltip": false
 },
 
@@ -68,6 +67,7 @@
         "btop": "󰻎 ",
         "htop": "󰻎 ",
         "Steam": " ",
+        "btop": "󰻎 ",
         "top": "󰻎 ",
         "virt-manager": " ",
         "virt-viewer": " "
@@ -81,7 +81,11 @@
 },
 
 "custom/macbook-update": {
-"return-type": "json", "exec": "~/.local/bin/macbook-update-check", "on-click": "~/.local/bin/macbook-update-run", "signal": 7, "interval": 3600
+    "format": " {}",
+    "exec": "~/.local/bin/macbook-update-check",
+    "on-click": "~/.local/bin/macbook-update-run",
+    "signal": 7,
+    "interval": 3600
 },
 
 "network": {
@@ -111,6 +115,7 @@
         "critical": 15
     },
     "format": "{capacity}% {icon}",
+    "format-charging": "{capacity}% 󰚥",
     "format-plugged": "{capacity}% ",
     "format-icons": ["","","","",""],
     "tooltip-format": "{timeTo} restantes",

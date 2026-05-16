@@ -1,30 +1,85 @@
 {
-  "$schema": "https://github.com",
-  "logo": {
-    "type": "small",
-    "padding": {
-      "top": 0,
-      "right": 2
-    },
-    "color": {
-        "1": "default"
-    }
-  },
+
   "modules": [
-
-    { "type": "os", "key": " ", "keyColor": "34" },
-    { "type": "kernel", "key": " ", "keyColor": "34" },
-    { "type": "packages", "key": "󰏕 ", "keyColor": "34" },
-    { "type": "wm", "key": " ", "keyColor": "34" },
-
-    { "type": "cpu", "key": "  ", "keyColor": "33" },
-    { "type": "memory", "key": "  ", "keyColor": "33" },
+  "break",
+    {
+      "type": "custom",
+      "format": "\u001b[90m┌───────────────────── Hardware ─────────────────────┐"
+    },
+    {
+      "type": "host",
+      "key": " PC",
+      "keyColor": "green"
+    },
+    {
+      "type": "cpu",
+      "key": "│ ├",
+      "showPeCoreCount": true,
+      "keyColor": "green"
+    },
+    {
+      "type": "disk",
+      "key": "│ ├󰋊",
+      "keyColor": "green"
+    },
+    {
+      "type": "memory",
+      "key": "└ └",
+      "keyColor": "green"
+    },
+    {
+      "type": "custom",
+      "format": "\u001b[90m└────────────────────────────────────────────────────┘"
+    },
+    "break",
+    {
+      "type": "custom",
+      "format": "\u001b[90m┌───────────────────── Software ─────────────────────┐"
+    },
     {
       "type": "command",
-      "key": "󰔠 ",
-      "keyColor": "33",
-      "shell": "/bin/sh",
-      "text": "echo $(($(($(date +%s) - $(stat -c %W /))) / 86400)) dias"
+      "key": "\ue900 OS",
+      "keyColor": "blue",
+      "text": "cat /etc/os-release | grep PRETTY_NAME | cut -d'\"' -f2"
     },
+    {
+      "type": "kernel",
+      "key": "│ ├",
+      "keyColor": "blue"
+    },
+    {
+      "type": "wm",
+      "key": "│ ├",
+      "keyColor": "blue"
+    },
+    {
+      "type": "packages",
+      "key": "└ └󰏖",
+      "keyColor": "blue"
+    },
+    {
+      "type": "custom",
+      "format": "\u001b[90m└────────────────────────────────────────────────────┘"
+    },
+    "break",
+    {
+      "type": "custom",
+      "format": "\u001b[90m┌───────────────────── Age / Uptime ─────────────────┐"
+    },
+    {
+      "type": "command",
+      "key": "󱦟 OS Age",
+      "keyColor": "magenta",
+      "text": "echo $(( ($(date +%s) - $(stat -c %W /)) / 86400 )) days"
+    },
+    {
+      "type": "uptime",
+      "key": "󱫐 Uptime",
+      "keyColor": "magenta"
+    },
+    {
+      "type": "custom",
+      "format": "\u001b[90m└────────────────────────────────────────────────────┘"
+    }
   ]
 }

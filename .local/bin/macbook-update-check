@@ -1,0 +1,79 @@
+#!/bin/bash
+CACHE_DIR="$HOME/.cache/macbook-updates"
+CACHE_FILE="$CACHE_DIR/last-check"
+LOG_FILE="$CACHE_DIR/checks.log"
+mkdir -p "$CACHE_DIR"
+
+TODAY_DATE=$(date +%Y-%m-%d)
+
+emit() {
+    local total="$1"
+    local tip="$2"
+    if [ "$total" -gt 0 ] 2>/dev/null; then
+        printf '{"text":" 󰏔 %s","tooltip":"%s","class":"has-updates"}\n' "$total" "$tip"
+
+    else
+        echo ""
+    fi
+}
+
+if [ -f "$CACHE_FILE" ]; then
+    LAST_DATE=$(head -n1 "$CACHE_FILE")
+    if [ "$LAST_DATE" = "$TODAY_DATE" ]; then
+        TOTAL=$(tail -n1 "$CACHE_FILE")
+        emit "$TOTAL" "Cache do dia\\nClique para atualizar"
+        exit 0
+    fi
+fi
+
+if ! ping -c 1 -W 2 archlinux.org &>/dev/null; then
+    exit 0
+fi
+
+OFFICIAL_LIST=$(checkupdates 2>/dev/null)
+AUR_LIST=$(yay -Qua 2>/dev/null)
+
+if [ -n "$OFFICIAL_LIST" ]; then
+    OFFICIAL=$(echo "$OFFICIAL_LIST" | wc -l)
+else
+    OFFICIAL=0
+fi
+
+if [ -n "$AUR_LIST" ]; then
+    AUR=$(echo "$AUR_LIST" | wc -l)
+else
+    AUR=0
+fi
+
+TOTAL=$((OFFICIAL + AUR))
+
+echo "$TODAY_DATE" > "$CACHE_FILE"
+echo "$TOTAL" >> "$CACHE_FILE"
+
+LOG_TIME=$(date '+%Y-%m-%d %H:%M')
+echo "[$LOG_TIME] Oficiais: $OFFICIAL | AUR: $AUR | Total: $TOTAL" >> "$LOG_FILE"
+
+TOOLTIP="📦 $TOTAL atualizações disponíveis\\n"
+TOOLTIP+="Oficiais: $OFFICIAL | AUR: $AUR\\n"
+TOOLTIP+="───────────────────\\n"
+if [ -n "$OFFICIAL_LIST" ]; then
+    while IFS= read -r line; do
+        TOOLTIP+="  $line\\n"
+    done <<< "$OFFICIAL_LIST"
+fi
+if [ -n "$AUR_LIST" ]; then
+    TOOLTIP+="── AUR ──\\n"
+    while IFS= read -r line; do
+        TOOLTIP+="  $line\\n"
+    done <<< "$AUR_LIST"
+fi
+TOOLTIP+="───────────────────\\n"
+TOOLTIP+="Clique para atualizar"
+
+if [ "$TOTAL" -gt 0 ]; then
+    notify-send -i software-update-available --expire-time=15000 \
+        "📦 $TOTAL atualizações disponíveis" \
+        "Oficiais: $OFFICIAL | AUR: $AUR"
+fi
+
+emit "$TOTAL" "$TOOLTIP"

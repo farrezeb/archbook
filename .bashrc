@@ -55,6 +55,8 @@ bind "set completion-ignore-case on"   2>/dev/null
 bind "set show-all-if-ambiguous On"    2>/dev/null
 bind '"\C-r": "\C-a history | fzf\n"' # Ctrl+R → busca fzf
 
+PROMPT_COMMAND='history -a; history -n; echo -ne "\033]0;${PWD/#$HOME/~}\007"'
+
 #######################################################
 # EXPORTS — XDG
 #######################################################
@@ -141,7 +143,6 @@ alias ls='eza --icons=always --group-directories-first --color=always'
 alias ll='eza -lh --icons --group-directories-first --git'
 alias la='eza -Ah --icons --group-directories-first'
 alias tree='eza --tree --icons'
-#alias cat='bat'
 alias find='fd --hidden --follow'
 
 #######################################################

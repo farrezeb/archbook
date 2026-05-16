@@ -7,8 +7,14 @@ export SWWW_SOCK="$XDG_RUNTIME_DIR/awww.socket"
 
 # Pega assinatura do Hyprland silenciosamente
 export HYPRLAND_INSTANCE_SIGNATURE=""
-if [ -d "/tmp/hypr" ]; then
+if [ -d "/run/user/$(id -u)/hypr" ]; then
+    export HYPRLAND_INSTANCE_SIGNATURE=$(ls -t /run/user/$(id -u)/hypr 2>/dev/null | head -n 1 || true)
+elif [ -d "/tmp/hypr" ]; then
     export HYPRLAND_INSTANCE_SIGNATURE=$(ls -t /tmp/hypr 2>/dev/null | head -n 1 || true)
+fi
+
+if [ -z "$XDG_RUNTIME_DIR" ]; then
+    export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 fi
 
 # Se vazia, não imprime aviso e continua (swww/hyprctl lidam com vazio)
@@ -17,17 +23,6 @@ if [ -z "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
 fi
 
 export PATH="$PATH:/usr/local/bin" # Garante wal e swww
-
-# Evita rodar se mudou muito recentemente
-#ULTIMO_WALLPAPER="$HOME/.cache/ultimo_wallpaper.txt"
-#if [ -f "$ULTIMO_WALLPAPER" ]; then
-#    LAST_CHANGE=$(stat -c %Y "$ULTIMO_WALLPAPER")
-#    NOW=$(date +%s)
-#    if [ $((NOW - LAST_CHANGE)) -lt 600 ]; then   # 600 segundos = 10 minutos
-#        echo "Wallpaper mudou recentemente. Saindo sem trocar."
-#        exit 0
-#    fi
-#fi
 
 # Verifica dependências básicas
 command -v awww >/dev/null 2>&1 || { notify-send "Erro" "swww não instalado"; exit 1; }
@@ -62,14 +57,6 @@ awww img "$ESCOLHIDO" \
 
 NOME_IMG=$(basename "$ESCOLHIDO")
 notify-send "Wallpaper ($RANDOM_TRANSITION)" "Aplicado: $NOME_IMG" -i "$ESCOLHIDO" -t 3000
-
-# Cache para evitar reprocessamento desnecessário
-if [ "$1" != "--force" ] && [ -f "$ULTIMO_WALLPAPER" ] && [ "$(cat "$ULTIMO_WALLPAPER")" = "$ESCOLHIDO" ]; then
-    echo "Mesmo wallpaper detectado. Saindo..."
-    exit 0
-fi
-
-echo "$ESCOLHIDO" > "$ULTIMO_WALLPAPER"
 
 # 3. Gera as cores com Pywal
 wal -i "$ESCOLHIDO" -q -a 100 2>/dev/null
@@ -196,8 +183,13 @@ EOF
 \$color6 = 0xff$(echo "$color6" | sed 's/#//g')
 \$color7 = 0xff$(echo "$color7" | sed 's/#//g')
 EOF
+
     mv ~/.cache/wal/colors-hyprland.tmp ~/.cache/wal/colors-hyprland.conf
-    hyprctl reload
+
+    # Só recarrega o Hyprland se estiver rodando
+    if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
+        hyprctl reload
+    fi
 
     # 4.4. Reinicia o Dunst
     if pgrep -x dunst > /dev/null; then

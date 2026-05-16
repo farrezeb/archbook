@@ -6,5 +6,5 @@
 
 config_version: 2
 settings:
-  scrolling.smooth:
+  colors.webpage.darkmode.enabled:
     global: false

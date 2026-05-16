@@ -1,0 +1,27 @@
+foot --wait -a floating-terminal sh -c '
+    echo "═══════════════════════════════════════"
+    echo "    🍎 MacBook Update"
+    echo "═══════════════════════════════════════"
+    echo ""
+
+    if command -v topgrade &>/dev/null; then
+        topgrade
+    else
+        echo "📦 Pacotes oficiais..."
+        sudo pacman -Syu
+        echo ""
+        echo "📦 AUR..."
+        yay -Sua 2>/dev/null || paru -Sua 2>/dev/null || echo "Instale yay/paru"
+    fi
+
+    echo ""
+    echo "═══════════════════════════════════════"
+    echo "    ✅ Concluído!"
+    echo "═══════════════════════════════════════"
+
+    echo ""
+    read -p "Pressione Enter para fechar..."
+'
+
+rm -f ~/.cache/macbook-updates/last-check
+pkill -RTMIN+7 waybar

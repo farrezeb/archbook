@@ -1,13 +1,15 @@
 {
-    "clipboard": "terminal",
-    "colorscheme": "simple",
-    "autosu": true,
+    "clipboard": "external",
+    "colorscheme": "monokai",
     "indentchar": " ",
     "tabsize": 4,
+    "tabstospaces": true,
     "mouse": true,
     "rmtrailingws": true,
     "saveundo": true,
     "mkparents": true,
     "cursorline": true,
-    "tabstospaces": true
+    "autosu": true,
+    "softwrap": true,
+    "hlsearch": true
 }

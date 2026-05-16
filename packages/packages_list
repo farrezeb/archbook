@@ -759,5 +759,8 @@ zix
 zlib
 zlib-ng
 zram-generator
+zsh
+zsh-autosuggestions
+zsh-syntax-highlighting
 zstd
 zxing-cpp

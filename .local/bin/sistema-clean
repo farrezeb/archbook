@@ -145,13 +145,13 @@ else
 fi
 
 # ---------- downloads antigos ----------
-section "Limpando Downloads Antigos (> 90 dias)"
+section "Limpando Downloads Antigos (> 60 dias)"
 DL_DIR="$HOME/dl"
 if [[ -d "$DL_DIR" ]]; then
     if command -v fd &>/dev/null; then
-        DL_FILES=$(fd . "$DL_DIR" --maxdepth 1 --type f --changed-before 90d 2>/dev/null || true)
+        DL_FILES=$(fd . "$DL_DIR" --maxdepth 1 --type f --changed-before 60d 2>/dev/null || true)
     else
-        DL_FILES=$(find "$DL_DIR" -maxdepth 1 -type f -mtime +90 2>/dev/null || true)
+        DL_FILES=$(find "$DL_DIR" -maxdepth 1 -type f -mtime +60 2>/dev/null || true)
     fi
     DL_COUNT=$(echo "$DL_FILES" | grep -c . || true)
     if $DRY; then

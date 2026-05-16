@@ -12,6 +12,9 @@ yay -Qq > ./packages/packages_list
 echo "→ Copiando dotfiles..."
 rsync -ah ~/.bashrc .
 rsync -ah ~/.inputrc .
+rsync -ah ~/.zshrc .
+rsync -ah ~/.zprofile .
+
 
 # ─── Wallpapers ─────────────────────────────────────────────────────────────
 echo "→ Copiando wallpapers..."
